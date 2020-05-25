@@ -85,11 +85,11 @@ def store_gnome_urls(url=None, chrome_path=None):
     return gnome_urls_store
 
 
-def crawl_atcg_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
+def crawl_atcg_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chrome_path=None, directory=None):
     if accession_url_mapper is not None:
         accessions_read = 0
         empty_read = {}
-        driver = webdriver.Chrome(chromepath)
+        driver = webdriver.Chrome(chrome_path)
         for accession in accession_url_mapper:
             try:
                 driver.get(base_url + accession_url_mapper[accession] + query_param)
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     crawl_atcg_sequence_page(base_url='https://www.ncbi.nlm.nih.gov',
                              query_param='?expands-on=true',
                              accession_url_mapper=json_data,
-                             chromepath=sys.argv[1],
+                             chrome_path=sys.argv[1],
                              directory=sys.argv[2])
     tf = time.time()
     end_time = time.asctime()
