@@ -87,16 +87,21 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
         empty_read = {}
         driver = webdriver.Chrome(chromepath)
         for accession in accession_url_mapper:
-            driver.get(base_url + accession_url_mapper[accession] + query_param)
+            try:
+                driver.get(base_url + accession_url_mapper[accession] + query_param)
+            except selenium.common.exceptions.TimeoutException as e:
+                empty_read[accession] = accession_url_mapper[accession]
+                continue
             time.sleep(4)
             atcg_page_html = BeautifulSoup(driver.page_source, features='html.parser')
             seq_list = atcg_page_html.findAll('span', attrs={'id': re.compile(accession + '.\d+_\d+')})
             print('Reading atcg sequence for accession %s' % accession)
             temp_seq_store = ""
             for seq in seq_list:
+                if 'UTR' in seq.text:
+                    continue
                 temp_seq_store += seq.text
             temp_seq_store = temp_seq_store.replace(' ', '')
-            # print('Sequence read\t: %s' % temp_seq_store)
 
             if len(temp_seq_store) == 0:
                 empty_read[accession] = accession_url_mapper[accession]
@@ -107,18 +112,18 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
                 print('%d/%d accessions written to file' % (accessions_read,len(accession_url_mapper)))
 
         ######################################################################
-        #           Write empty accession in a file                         ##
+        #           Write empty accessions in a file                        ##
         ######################################################################
-        with open('empty_accessions_read', 'w') as writer:
-            json.dump(empty_read, writer)
+        if len(empty_read) != 0:
+            with open('empty_accessions_read', 'w') as writer:
+                json.dump(empty_read, writer)
 
         ######################################################################
         #                           Some stats                              ##
         ######################################################################
-        print('#' * 40)
+        print('#' * 60)
         print('%d/%d accessions written' % (len(accession_url_mapper) - len(empty_read), len(accession_url_mapper)))
         print('Empty accessions read \t: %d' % len(empty_read))
-        print('#' * 40)
 
 
 if __name__ == '__main__':
@@ -142,11 +147,11 @@ if __name__ == '__main__':
     ##################################################################
     #       Read stored urls and open and store atcg strings         #
     ##################################################################
-    json_data = read_urls_from_serialized_json_file('complete_gnome_urls_store')
+    # json_data = read_urls_from_serialized_json_file('complete_gnome_urls_store')
     ##################################################################
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
-    # json_data = read_as_json(filename='empty_accessions_read')
+    json_data = read_as_json(filename='empty_accessions_read')
     store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
                       query_param='?expands-on=true',
                       accession_url_mapper=json_data,
@@ -157,5 +162,5 @@ if __name__ == '__main__':
     print('Time taken for the crawl \t: %f' % ((tf - t0) / 3600))
     print('Start time in human terms\t:%s' % start_time)
     print('End time in human terms  \t:%s' % end_time)
-    print('#' * 40)
+    print('#' * 60)
 
