@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from serialize_data_to_file import read_as_json
+from serialize_data_to_file import read_as_json, read_urls_from_serialized_json_file
 
 
 def store_gnome_urls(url=None, chromepath=None):
@@ -81,20 +81,6 @@ def store_gnome_urls(url=None, chromepath=None):
         except selenium.common.exceptions.InvalidElementStateException:
             return gnome_urls_store
     return gnome_urls_store
-
-
-def read_urls_from_serialized_json_file(file_path=None):
-    """
-    Read the relative urls from the serialized json file.
-    Those urls contain the atcg sequence data.
-    :param file_path: The path to the file which stores the serialized url.
-    :return:
-    """
-    if file_path is not None:
-        with open(file_path, 'r') as data_file:
-            accession_url_mapper = json.load(data_file)
-        return accession_url_mapper
-    raise FileNotFoundError
 
 
 def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
