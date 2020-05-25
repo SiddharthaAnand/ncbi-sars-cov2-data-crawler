@@ -19,7 +19,7 @@ Using selenium and beautifulsoup.
 ```
 $ python ncbi_sars2_crawler.py
 ```
-## Work in progess
+## Work in progress
 - Add option arguments parser to handle the code with command-line
 arguments.
 - Figure out ways to use headless browser and use multiple requests
