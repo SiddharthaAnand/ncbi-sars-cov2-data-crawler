@@ -5,29 +5,31 @@ import selenium
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+from ncbi_nucleotide_page import NcbiNucleotidePage
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from serialize_data_to_file import read_as_json, read_urls_from_serialized_json_file
 
 
-def store_gnome_urls(url=None, chromepath=None):
+def store_gnome_urls(url=None, chrome_path=None):
     """
     This method is used to store the relative urls for visiting those pages
     which contain the atcg sequences.
     :param url: The ncbi url page which enlists the newly added sars cov-2 anchor
     links and other meta-data.
-    :param chromepath: Absolute path to the chromedriver which is stored in your system.
+    :param chrome_path: Absolute path to the chromedriver which is stored in your system.
     :return: None
     """
-    if url is None or chromepath is None:
+    if url is None or chrome_path is None:
         return {'parameter': 'is None'}
     else:
         urls_stored = 0
         gnome_urls_store = {}
+        ncbi_nucleotide_page = NcbiNucleotidePage.__getinstance__()
         ########################################################
         #               Get the page first                     #
         ########################################################
-        driver = webdriver.Chrome(chromepath)
+        driver = webdriver.Chrome(chrome_path)
         driver.get(url)
         url_count = 0
         pages = range(15)
@@ -41,15 +43,15 @@ def store_gnome_urls(url=None, chromepath=None):
                 #           Choose the accession column                #
                 ########################################################
                 element = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, '[title="Expand record details"]'))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, ncbi_nucleotide_page.accession_element))
                 )
                 time.sleep(2)
-                accession_column_links = driver.find_elements_by_css_selector('[title="Expand record details"]')
+                accession_column_links = driver.find_elements_by_css_selector(ncbi_nucleotide_page.accession_element)
                 urls_stored += len(accession_column_links)
                 if urls_stored >= 200:
                     time.sleep(5)
-                    accession_column_links = driver.find_elements_by_css_selector('[title="Expand record details"]')
-                print(" total number f accessions\t: %d" % urls_stored)
+                    accession_column_links = driver.find_elements_by_css_selector(ncbi_nucleotide_page.accession_element)
+                print("Total number of accessions\t: %d" % urls_stored)
 
                 for link in accession_column_links:
                     try:
@@ -61,14 +63,14 @@ def store_gnome_urls(url=None, chromepath=None):
                         link = new_accession_col_links[url_count]
                         time.sleep(2)
                         link.click()
-                    source_code = BeautifulSoup(driver.page_source, features='html.parser')
-                    details_panel_for_accession = source_code.find('a', attrs={'title': 'Go to GenBank record'})
-                    gnome_urls_store.update({details_panel_for_accession.text:details_panel_for_accession['href']})
+                    page_source = BeautifulSoup(driver.page_source, features='html.parser')
+                    details_panel_for_accession = page_source.find('a', attrs={'title': 'Go to GenBank record'})
+                    gnome_urls_store.update({details_panel_for_accession.text: details_panel_for_accession['href']})
                     element = WebDriverWait(driver, 5).until(
-                        EC.presence_of_element_located((By.XPATH, "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i"))
+                        EC.presence_of_element_located((By.XPATH, ncbi_nucleotide_page.close_button_on_details_modal))
                     )
                     time.sleep(2)
-                    close = driver.find_element_by_xpath("//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i")
+                    close = driver.find_element_by_xpath(ncbi_nucleotide_page.close_button_on_details_modal)
                     close.click()
                 print("%s urls stored\t" % (len(gnome_urls_store)))
                 if len(accession_column_links) < 200:
@@ -76,14 +78,14 @@ def store_gnome_urls(url=None, chromepath=None):
                 ###############################################################################################
                 #               Find the button to go the next page                                           #
                 ###############################################################################################
-                next_page_button = driver.find_element_by_xpath("//button[@aria-label=\"Next Page\"]")
+                next_page_button = driver.find_element_by_xpath(ncbi_nucleotide_page.next_page_button_element)
                 next_page_button.send_keys('\n')
         except selenium.common.exceptions.InvalidElementStateException:
             return gnome_urls_store
     return gnome_urls_store
 
 
-def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
+def crawl_atcg_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
     if accession_url_mapper is not None:
         accessions_read = 0
         empty_read = {}
@@ -111,7 +113,7 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
                 writer.write(temp_seq_store)
             accessions_read += 1
             if accessions_read % 10 == 0:
-                print('%d/%d accessions written to file' % (accessions_read,len(accession_url_mapper)))
+                print('%d/%d accessions written to file' % (accessions_read, len(accession_url_mapper)))
 
         ######################################################################
         #           Write empty accessions in a file                        ##
@@ -154,11 +156,11 @@ if __name__ == '__main__':
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
     json_data = read_as_json(filename='empty_accessions_read')
-    store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
-                      query_param='?expands-on=true',
-                      accession_url_mapper=json_data,
-                      chromepath=sys.argv[1],
-                      directory=sys.argv[2])
+    crawl_atcg_sequence_page(base_url='https://www.ncbi.nlm.nih.gov',
+                             query_param='?expands-on=true',
+                             accession_url_mapper=json_data,
+                             chromepath=sys.argv[1],
+                             directory=sys.argv[2])
     tf = time.time()
     end_time = time.asctime()
     print('Time taken for the crawl \t: %f' % ((tf - t0) / 3600))
