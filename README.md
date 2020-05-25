@@ -15,6 +15,15 @@ input by the user. So, if there are 2000 accessions, then there would be
 ## How?
 Using selenium and beautifulsoup.
 
+## Installation
+- Set up a virtual environment.
+```
+$ virtualenv -p /usr/bin/python3.5 venv
+```
+- Install requirements.
+- Understand command-line arguments with the help option.
+- Run the code.
+
 ## How to run?
 ```
 $ python ncbi_sars2_crawler.py
