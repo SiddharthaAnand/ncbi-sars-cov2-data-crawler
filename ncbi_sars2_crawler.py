@@ -7,12 +7,20 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from empty_accessions import read_as_json
+from serialize_data_to_file import read_as_json
 
 
 def store_gnome_urls(url=None, chromepath=None):
-    if url is None:
-        return {'url': 'is empty'}
+    """
+    This method is used to store the relative urls for visiting those pages
+    which contain the atcg sequences.
+    :param url: The ncbi url page which enlists the newly added sars cov-2 anchor
+    links and other meta-data.
+    :param chromepath: Absolute path to the chromedriver which is stored in your system.
+    :return: None
+    """
+    if url is None or chromepath is None:
+        return {'parameter': 'is None'}
     else:
         urls_stored = 0
         gnome_urls_store = {}
@@ -65,6 +73,9 @@ def store_gnome_urls(url=None, chromepath=None):
                 print("%s urls stored\t" % (len(gnome_urls_store)))
                 if len(accession_column_links) < 200:
                     break
+                ###############################################################################################
+                #               Find the button to go the next page                                           #
+                ###############################################################################################
                 next_page_button = driver.find_element_by_xpath("//button[@aria-label=\"Next Page\"]")
                 next_page_button.send_keys('\n')
         except selenium.common.exceptions.InvalidElementStateException:
@@ -73,6 +84,12 @@ def store_gnome_urls(url=None, chromepath=None):
 
 
 def read_urls_from_serialized_json_file(file_path=None):
+    """
+    Read the relative urls from the serialized json file.
+    Those urls contain the atcg sequence data.
+    :param file_path: The path to the file which stores the serialized url.
+    :return:
+    """
     if file_path is not None:
         with open(file_path, 'r') as data_file:
             accession_url_mapper = json.load(data_file)
@@ -80,8 +97,7 @@ def read_urls_from_serialized_json_file(file_path=None):
     raise FileNotFoundError
 
 
-def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None,
-                      chromepath=None, directory=None):
+def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
     if accession_url_mapper is not None:
         accessions_read = 0
         empty_read = {}
