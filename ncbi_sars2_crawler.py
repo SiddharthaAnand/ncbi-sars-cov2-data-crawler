@@ -5,7 +5,7 @@ import selenium
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from ncbi_nucleotide_page import NcbiNucleotidePage
+from ncbi_sars_cov2_datapage import NcbiSarsCov2DataPage
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from serialize_data_to_file import read_as_json, read_urls_from_serialized_json_file
@@ -25,7 +25,7 @@ def store_gnome_urls(url=None, chrome_path=None):
     else:
         urls_stored = 0
         gnome_urls_store = {}
-        ncbi_nucleotide_page = NcbiNucleotidePage.__getinstance__()
+        ncbi_nucleotide_page = NcbiSarsCov2DataPage.get_instance()
         ########################################################
         #               Get the page first                     #
         ########################################################
