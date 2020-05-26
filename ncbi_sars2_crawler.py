@@ -1,6 +1,7 @@
 import re
 import time
 import json
+import argparse
 import selenium
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -8,10 +9,38 @@ from selenium.webdriver.common.by import By
 from ncbi_sars_cov2_datapage import NcbiSarsCov2DataPage
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from serialize_data_to_file import read_as_json, read_urls_from_serialized_json_file
+from serialize_deserialize_data import read_as_json, read_urls_from_serialized_json_file
 
 
-def store_gnome_urls(url=None, chrome_path=None):
+class NCBICrawler(object):
+    def __init__(self, seed_url=None, chrome_path=None):
+        self.driver = None
+        self.seed_url = seed_url
+        self.collected_urls_counter = 0
+        self.nucleotide_urls_count = 0
+        self.chrome_path = chrome_path
+        self.genome_urls_store_dict = {}
+
+    def open_chrome(self):
+        self.driver = webdriver.Chrome(self.chrome_path)
+
+    def go_to_seed_url(self):
+        if self.seed_url is None or len(self.seed_url) == 0:
+            print('Exception: self.seed_url is either None or empty')
+            raise Exception
+        if self.driver is None:
+            print('Exception: self.driver is None')
+            raise Exception
+        self.driver.get(self.seed_url)
+
+    def get_collected_urls_counter(self):
+        return self.collected_urls_counter
+
+    def set_collected_urls_counter(self):
+        self.collected_urls_counter += 1
+
+
+def store_genome_page_urls(url=None, chrome_path=None):
     """
     This method is used to store the relative urls for visiting those pages
     which contain the atcg sequences.
@@ -128,6 +157,11 @@ def crawl_atcg_sequence_page(base_url=None, query_param=None, accession_url_mapp
         print('#' * 60)
         print('%d/%d accessions written' % (len(accession_url_mapper) - len(empty_read), len(accession_url_mapper)))
         print('Empty accessions read \t: %d' % len(empty_read))
+
+
+def define_parser_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-rel-url', 'collect_relative_urls')
 
 
 if __name__ == '__main__':
