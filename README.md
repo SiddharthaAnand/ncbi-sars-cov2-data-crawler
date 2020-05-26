@@ -1,7 +1,7 @@
 # NCBI SARS COV-2 Data Crawler
 A crawler which crawls the atcg sequence of the novel corona-virus2
 found all over the world. This data is being uploaded at the [ncbi
-website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete).
+website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete) and being updated everyday.
 
 ## What it scrapes exactly?
 It scrapes data from the [ncbi website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete) and currently only crawls the atcg
@@ -16,7 +16,7 @@ input by the user. So, if there are 2000 accessions, then there would be
 Using selenium and beautifulsoup.
 
 ## Installation
-- Set up a virtual environment.
+Set up a virtual environment.(virtualenv needs to be present in your system.)
 ```
 $ virtualenv -p /usr/bin/python3.5 venv
 ```
