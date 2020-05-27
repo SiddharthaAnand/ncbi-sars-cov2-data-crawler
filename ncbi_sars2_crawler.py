@@ -49,12 +49,12 @@ class NCBICrawler(object):
     def get_total_pages(self):
         pass
 
-    def wait_for_element(self, element_to_wait_for, timeout_in_sec=5):
+    def explicit_wait_for_element(self, element_to_wait_for, locate_element_by, timeout_in_sec=5):
         WebDriverWait(self.driver, timeout_in_sec).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, element_to_wait_for))
+            EC.presence_of_element_located((locate_element_by, element_to_wait_for))
         )
 
-    def parse_webpage(self, parser='html.parser'):
+    def parse_web_page(self, parser='html.parser'):
         self.parsed_content = BeautifulSoup(self.driver.page_source, parser=parser)
 
     def find_element_by_xpath(self, element):
