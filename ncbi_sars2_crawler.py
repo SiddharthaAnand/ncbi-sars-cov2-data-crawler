@@ -22,7 +22,11 @@ class NCBICrawler(object):
         self.nucleotide_urls_count = 0
         self.collected_urls_counter = 0
         self.ncbi_sars_cov2_datapage = NcbiSarsCov2DataPage.get_instance()
-        self.accession_rel_urls = []
+        self.accession_rel_url_html = []
+        self.genbank_rel_url_html = []
+        self.gnome_urls_store = {}
+        self.close_brief_details_modal = None
+        self.go_to_next_page = None
 
     def open_chrome(self):
         self.driver = webdriver.Chrome(self.chrome_path)
@@ -50,19 +54,32 @@ class NCBICrawler(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, element_to_wait_for))
         )
 
-    def initialize_bs_parse_webpage(self, parser='html.parser'):
+    def parse_webpage(self, parser='html.parser'):
         self.parsed_content = BeautifulSoup(self.driver.page_source, parser=parser)
 
     def find_element_by_xpath(self, element):
-        self.accession_rel_urls = self.driver.find_elements_by_css_selector(element)
+        self.accession_rel_url_html = self.driver.find_elements_by_css_selector(element)
 
     def click_element(self, element):
         element.click()
 
+    def get_genbank_url(self):
+        self.genbank_rel_url_html = self.parsed_content.find('a', attrs={'title': 'Go to GenBank record'})
+
+    def store_genome_url(self):
+        self.gnome_urls_store.update({self.genbank_rel_url_html.text: self.genbank_rel_url_html['href']})
+
+    def close_details_modal(self):
+        self.close_brief_details_modal = self.driver.find_element_by_xpath(self.ncbi_nucleotide_page.close_button_on_details_modal)
+        self.close_brief_details_modal.click()
+
+    def go_to_next_page(self):
+        self.go_to_next_page = self.driver.find_element_by_xpath(self.ncbi_nucleotide_page.next_page_button_element)
+        self.go_to_next_page.send_keys('\n')
+
     @staticmethod
     def sleep(time_in_sec=2):
         time.sleep(time_in_sec)
-
 
 
 def store_genome_page_urls(url=None, chrome_path=None):
