@@ -39,6 +39,15 @@ class NCBICrawler(object):
     def set_collected_urls_counter(self):
         self.collected_urls_counter += 1
 
+    def get_total_pages(self):
+        pass
+
+    def wait_for_element(self, element_to_wait_for, timeout_in_sec=5):
+        WebDriverWait(self.driver, timeout_in_sec).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, element_to_wait_for))
+        )
+
+
 
 def store_genome_page_urls(url=None, chrome_path=None):
     """
