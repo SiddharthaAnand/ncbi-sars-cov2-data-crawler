@@ -47,9 +47,13 @@ class NCBICrawler(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, element_to_wait_for))
         )
 
+    def initialize_bs_parse_webpage(self, parser='html.parser'):
+        return BeautifulSoup(self.driver.page_source, parser=parser)
+
     @staticmethod
-    def sleep(sleep_time_in_sec=2):
-        time.sleep(sleep_time_in_sec)
+    def sleep(time_in_sec=2):
+        time.sleep(time_in_sec)
+
 
 
 def store_genome_page_urls(url=None, chrome_path=None):
