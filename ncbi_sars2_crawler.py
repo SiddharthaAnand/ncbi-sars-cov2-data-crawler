@@ -47,6 +47,9 @@ class NCBICrawler(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, element_to_wait_for))
         )
 
+    @staticmethod
+    def sleep(sleep_time_in_sec=2):
+        time.sleep(sleep_time_in_sec)
 
 
 def store_genome_page_urls(url=None, chrome_path=None):
