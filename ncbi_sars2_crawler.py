@@ -15,11 +15,14 @@ from serialize_deserialize_data import read_as_json, read_urls_from_serialized_j
 class NCBICrawler(object):
     def __init__(self, seed_url=None, chrome_path=None):
         self.driver = None
-        self.seed_url = seed_url
-        self.collected_urls_counter = 0
-        self.nucleotide_urls_count = 0
-        self.chrome_path = chrome_path
+        self.parsed_content = None
         self.genome_urls_store_dict = {}
+        self.seed_url = seed_url
+        self.chrome_path = chrome_path
+        self.nucleotide_urls_count = 0
+        self.collected_urls_counter = 0
+        self.ncbi_sars_cov2_datapage = NcbiSarsCov2DataPage.get_instance()
+        self.accession_rel_urls = []
 
     def open_chrome(self):
         self.driver = webdriver.Chrome(self.chrome_path)
@@ -48,7 +51,13 @@ class NCBICrawler(object):
         )
 
     def initialize_bs_parse_webpage(self, parser='html.parser'):
-        return BeautifulSoup(self.driver.page_source, parser=parser)
+        self.parsed_content = BeautifulSoup(self.driver.page_source, parser=parser)
+
+    def find_element_by_xpath(self, element):
+        self.accession_rel_urls = self.driver.find_elements_by_css_selector(element)
+
+    def click_element(self, element):
+        element.click()
 
     @staticmethod
     def sleep(time_in_sec=2):
