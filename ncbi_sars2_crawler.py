@@ -6,7 +6,7 @@ import selenium
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from ncbi_sars_cov2_datapage import NcbiSarsCov2DataPage
+from ncbi_sars2_covid_webpage import NcbiSarsCov2DataPage
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from serialize_deserialize_data import read_as_json, read_urls_from_serialized_json_file
@@ -154,6 +154,17 @@ def store_genome_page_urls(url=None, chrome_path=None):
         except selenium.common.exceptions.InvalidElementStateException:
             return gnome_urls_store
     return gnome_urls_store
+
+
+class ATCGSequencePage(object):
+    def __init__(self, chrome_path=None, accession_url_mapper=None):
+        self.accession_url_mapper = accession_url_mapper
+        self.chrome_path = chrome_path
+        self.driver = None
+
+    def open_chrome(self):
+        self.driver = webdriver.Chrome(self.chrome_path)
+
 
 
 def crawl_atcg_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chrome_path=None, directory=None):
