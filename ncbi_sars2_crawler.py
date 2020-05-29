@@ -157,13 +157,49 @@ def store_genome_page_urls(url=None, chrome_path=None):
 
 
 class ATCGSequencePage(object):
-    def __init__(self, chrome_path=None, accession_url_mapper=None):
-        self.accession_url_mapper = accession_url_mapper
-        self.chrome_path = chrome_path
+    def __init__(self, chrome_path=None, accession_url_mapper=None, base_url=None, atcg_seq_storage_directory=None):
+        """
+        Variables that are constant irrespective of the web page should be
+        initialized early on.(As soon as the spider is initialized.
+        :param chrome_path: absolute path of the chrome driver
+        :param accession_url_mapper: the deserialized mapper which maps the
+        accession name/id to the relative url.
+        """
         self.driver = None
+        self.base_url = base_url
+        self.chrome_path = chrome_path
+        self.missed_parsed_pages = []
+        self.accession_url_mapper = accession_url_mapper
+        self.atcg_seq_storage_directory = atcg_seq_storage_directory
 
     def open_chrome(self):
         self.driver = webdriver.Chrome(self.chrome_path)
+
+    def wait_for_element(self, time_out_in_sec=5):
+        pass
+
+    def go_to_url(self, relative_url=None, query_params=None):
+        pass
+
+    def go_to_sleep(self, time_in_seconds=5):
+        pass
+
+    def parse_web_page(self):
+        pass
+
+    def get_atcg_sequence(self):
+        pass
+
+    def serialize_atcg_sequence(self):
+        pass
+
+    @staticmethod
+    def create_directory_if_not_present():
+        pass
+
+    @staticmethod
+    def write_to_file(file_name):
+        pass
 
 
 
