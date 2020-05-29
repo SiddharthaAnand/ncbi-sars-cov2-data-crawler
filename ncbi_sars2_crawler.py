@@ -171,6 +171,8 @@ class ATCGSequencePage(object):
         self.missed_parsed_pages = []
         self.accession_url_mapper = accession_url_mapper
         self.atcg_seq_storage_directory = atcg_seq_storage_directory
+        self.empty_web_pages_read = []
+        self.parsed_content = None
 
     def open_chrome(self):
         self.driver = webdriver.Chrome(self.chrome_path)
@@ -179,13 +181,14 @@ class ATCGSequencePage(object):
         pass
 
     def go_to_url(self, relative_url=None, query_params=None):
-        pass
+        self.driver.get(self.base_url + relative_url + query_params)
 
     def go_to_sleep(self, time_in_seconds=5):
-        pass
+        time.sleep(time_in_seconds)
 
-    def parse_web_page(self):
-        pass
+    def parse_web_page(self, html_tag='span', attr='id', accession_attr_value=None):
+        parsed_page = BeautifulSoup(self.driver.page_source)
+        self.parsed_content = parsed_page.findAll(html_tag, attrs={attr: re.compile(accession_attr_value + '.\d+_\d+')})
 
     def get_atcg_sequence(self):
         pass
