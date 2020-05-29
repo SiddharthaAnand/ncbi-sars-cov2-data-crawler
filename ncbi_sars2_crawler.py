@@ -81,6 +81,77 @@ class NCBICrawler(object):
     def sleep(time_in_sec=2):
         time.sleep(time_in_sec)
 
+class ATGCSequencePage(object):
+    def __init__(self, chrome_path=None, accession_url_mapper=None, base_url=None, atgc_seq_storage_directory=None):
+        """
+        Variables that are constant irrespective of the web page should be
+        initialized early on.(As soon as the spider is initialized.
+        :param chrome_path: absolute path of the chrome driver
+        :param accession_url_mapper: the deserialized mapper which maps the
+        accession name/id to the relative url.
+        """
+        self.driver = None
+        self.base_url = base_url
+        self.chrome_path = chrome_path
+        self.missed_parsed_pages = []
+        self.accession_url_mapper = accession_url_mapper
+        self.atgc_seq_storage_directory = atgc_seq_storage_directory
+        self.empty_web_pages_read = {}
+        self.parsed_content = None
+        self.scraped_atgc_sequence = ""
+
+    def open_chrome(self):
+        self.driver = webdriver.Chrome(self.chrome_path)
+
+    def wait_for_element(self, time_out_in_sec=5):
+        pass
+
+    def go_to_url(self, relative_url=None, query_params=None):
+        self.driver.get(self.base_url + relative_url + query_params)
+
+    @staticmethod
+    def go_to_sleep(time_in_seconds=5):
+        time.sleep(time_in_seconds)
+
+    def parse_web_page(self, html_tag='span', attr='id', accession_attr_value=None):
+        parsed_page = BeautifulSoup(self.driver.page_source, features='html.parser')
+        self.parsed_content = parsed_page.findAll(html_tag, attrs={attr: re.compile(accession_attr_value + '.\d+_\d+')})
+
+    def get_atgc_sequence(self):
+        for seq in self.parsed_content:
+            if 'UTR' not in seq.text:
+                self.scraped_atgc_sequence += seq.text
+        self.scraped_atgc_sequence = self.scraped_atgc_sequence.replace(' ', '')
+        if len(self.scraped_atgc_sequence) == 0:
+            self.check_if_empty_atcg_seq(seq)
+
+    def check_if_empty_atcg_seq(self, seq):
+        self.empty_web_pages_read.update({seq: self.accession_url_mapper[seq]})
+
+    def serialize_atgc_sequence(self, accession):
+        # TODO Check if directory exists;if not, create one!
+        # create_directory_if_not_present
+        with open(self.atgc_seq_storage_directory + accession + '.txt', 'w') as writer:
+            writer.write(self.scraped_atgc_sequence)
+
+    def serialize_empty_web_pages_accessions(self):
+        """
+        Write empty accessions in a file.
+        :return: None
+        """
+        with open('empty_accessions_read', 'w') as writer:
+            json.dump(self.empty_web_pages_read, writer)
+
+    def print_logs_to_stdout(self):
+        """
+        Print some stats to stdout
+        :return: None
+        """
+        print('#' * 60)
+        print('%d/%d accessions written' % (
+        len(self.accession_url_mapper) - len(self.empty_web_pages_read), len(self.accession_url_mapper)))
+        print('Empty accessions read \t: %d' % len(self.empty_web_pages_read))
+
 
 def store_genome_page_urls(url=None, chrome_path=None):
     """
@@ -156,60 +227,6 @@ def store_genome_page_urls(url=None, chrome_path=None):
     return gnome_urls_store
 
 
-class ATGCSequencePage(object):
-    def __init__(self, chrome_path=None, accession_url_mapper=None, base_url=None, atgc_seq_storage_directory=None):
-        """
-        Variables that are constant irrespective of the web page should be
-        initialized early on.(As soon as the spider is initialized.
-        :param chrome_path: absolute path of the chrome driver
-        :param accession_url_mapper: the deserialized mapper which maps the
-        accession name/id to the relative url.
-        """
-        self.driver = None
-        self.base_url = base_url
-        self.chrome_path = chrome_path
-        self.missed_parsed_pages = []
-        self.accession_url_mapper = accession_url_mapper
-        self.atgc_seq_storage_directory = atgc_seq_storage_directory
-        self.empty_web_pages_read = {}
-        self.parsed_content = None
-        self.scraped_atgc_sequence = ""
-
-    def open_chrome(self):
-        self.driver = webdriver.Chrome(self.chrome_path)
-
-    def wait_for_element(self, time_out_in_sec=5):
-        pass
-
-    def go_to_url(self, relative_url=None, query_params=None):
-        self.driver.get(self.base_url + relative_url + query_params)
-
-    @staticmethod
-    def go_to_sleep(time_in_seconds=5):
-        time.sleep(time_in_seconds)
-
-    def parse_web_page(self, html_tag='span', attr='id', accession_attr_value=None):
-        parsed_page = BeautifulSoup(self.driver.page_source, features='html.parser')
-        self.parsed_content = parsed_page.findAll(html_tag, attrs={attr: re.compile(accession_attr_value + '.\d+_\d+')})
-
-    def get_atgc_sequence(self):
-        for seq in self.parsed_content:
-            if 'UTR' not in seq.text:
-                self.scraped_atgc_sequence += seq.text
-        self.scraped_atgc_sequence = self.scraped_atgc_sequence.replace(' ', '')
-        if len(self.scraped_atgc_sequence) == 0:
-            self.check_if_empty_atcg_seq(seq)
-
-    def check_if_empty_atcg_seq(self, seq):
-        self.empty_web_pages_read.update({seq: self.accession_url_mapper[seq]})
-
-    def serialize_atgc_sequence(self, accession):
-        # TODO Check if directory exists;if not, create one!
-        # create_directory_if_not_present
-        with open(self.atgc_seq_storage_directory + accession + '.txt', 'w') as writer:
-            writer.write(self.scraped_atgc_sequence)
-
-
 def crawl_atgc_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chrome_path=None, directory=None):
     spider = ATGCSequencePage(chrome_path=chrome_path, accession_url_mapper=accession_url_mapper,base_url=base_url, atgc_seq_storage_directory=directory)
     spider.open_chrome()
@@ -222,20 +239,7 @@ def crawl_atgc_sequence_page(base_url=None, query_param=None, accession_url_mapp
         accessions_read += 1
         if accessions_read % 10 == 0:
             print('%d/%d accessions written to file' % (accessions_read, len(accession_url_mapper)))
-
-        ######################################################################
-        #           Write empty accessions in a file                        ##
-        ######################################################################
-        if len(spider.empty_web_pages_read) != 0:
-            with open('empty_accessions_read', 'w') as writer:
-                json.dump(spider.empty_web_pages_read, writer)
-
-        ######################################################################
-        #                           Some stats                              ##
-        ######################################################################
-        print('#' * 60)
-        print('%d/%d accessions written' % (len(accession_url_mapper) - len(spider.empty_web_pages_read), len(accession_url_mapper)))
-        print('Empty accessions read \t: %d' % len(spider.empty_web_pages_read))
+        spider.serialize_empty_web_pages_accessions()
 
 
 def define_parser_args():
@@ -268,12 +272,12 @@ if __name__ == '__main__':
     ##################################################################
     #       Read the empty accessions and store atgc strings again   #
     ##################################################################
-    json_data = read_as_json(filename='empty_accessions_read')
-    crawl_atgc_sequence_page(base_url='https://www.ncbi.nlm.nih.gov',
-                             query_param='?expands-on=true',
-                             accession_url_mapper=json_data,
-                             chrome_path=sys.argv[1],
-                             directory=sys.argv[2])
+    # json_data = read_as_json(filename='empty_accessions_read')
+    # crawl_atgc_sequence_page(base_url='https://www.ncbi.nlm.nih.gov',
+    #                          query_param='?expands-on=true',
+    #                          accession_url_mapper=json_data,
+    #                          chrome_path=sys.argv[1],
+    #                          directory=sys.argv[2])
     tf = time.time()
     end_time = time.asctime()
     print('Time taken for the crawl \t: %f' % ((tf - t0) / 3600))
