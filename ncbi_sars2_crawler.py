@@ -85,7 +85,7 @@ class NCBICrawler(object):
 def store_genome_page_urls(url=None, chrome_path=None):
     """
     This method is used to store the relative urls for visiting those pages
-    which contain the atcg sequences.
+    which contain the atgc sequences.
     :param url: The ncbi url page which enlists the newly added sars cov-2 anchor
     links and other meta-data.
     :param chrome_path: Absolute path to the chromedriver which is stored in your system.
@@ -156,8 +156,8 @@ def store_genome_page_urls(url=None, chrome_path=None):
     return gnome_urls_store
 
 
-class ATCGSequencePage(object):
-    def __init__(self, chrome_path=None, accession_url_mapper=None, base_url=None, atcg_seq_storage_directory=None):
+class ATGCSequencePage(object):
+    def __init__(self, chrome_path=None, accession_url_mapper=None, base_url=None, atgc_seq_storage_directory=None):
         """
         Variables that are constant irrespective of the web page should be
         initialized early on.(As soon as the spider is initialized.
@@ -170,10 +170,10 @@ class ATCGSequencePage(object):
         self.chrome_path = chrome_path
         self.missed_parsed_pages = []
         self.accession_url_mapper = accession_url_mapper
-        self.atcg_seq_storage_directory = atcg_seq_storage_directory
+        self.atgc_seq_storage_directory = atgc_seq_storage_directory
         self.empty_web_pages_read = []
         self.parsed_content = None
-        self.scraped_atcg_sequence = ""
+        self.scraped_atgc_sequence = ""
 
     def open_chrome(self):
         self.driver = webdriver.Chrome(self.chrome_path)
@@ -184,28 +184,29 @@ class ATCGSequencePage(object):
     def go_to_url(self, relative_url=None, query_params=None):
         self.driver.get(self.base_url + relative_url + query_params)
 
-    def go_to_sleep(self, time_in_seconds=5):
+    @staticmethod
+    def go_to_sleep(time_in_seconds=5):
         time.sleep(time_in_seconds)
 
     def parse_web_page(self, html_tag='span', attr='id', accession_attr_value=None):
         parsed_page = BeautifulSoup(self.driver.page_source)
         self.parsed_content = parsed_page.findAll(html_tag, attrs={attr: re.compile(accession_attr_value + '.\d+_\d+')})
 
-    def get_atcg_sequence(self):
+    def get_atgc_sequence(self):
         for seq in self.parsed_content:
             if 'UTR' not in seq.text:
-                self.scraped_atcg_sequence += seq.text
-        self.scraped_atcg_sequence = self.scraped_atcg_sequence.replace(' ', '')
+                self.scraped_atgc_sequence += seq.text
+        self.scraped_atgc_sequence = self.scraped_atgc_sequence.replace(' ', '')
 
-    def serialize_atcg_sequence(self, accession):
+    def serialize_atgc_sequence(self, accession):
         # TODO Check if directory exists;if not, create one!
         # create_directory_if_not_present
         with open(self.directory + accession + '.txt', 'w') as writer:
-            writer.write(self.scraped_atcg_sequence)
+            writer.write(self.scraped_atgc_sequence)
 
 
 
-def crawl_atcg_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chrome_path=None, directory=None):
+def crawl_atgc_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chrome_path=None, directory=None):
     if accession_url_mapper is not None:
         accessions_read = 0
         empty_read = {}
@@ -217,9 +218,9 @@ def crawl_atcg_sequence_page(base_url=None, query_param=None, accession_url_mapp
                 empty_read[accession] = accession_url_mapper[accession]
                 continue
             time.sleep(4)
-            atcg_page_html = BeautifulSoup(driver.page_source, features='html.parser')
-            seq_list = atcg_page_html.findAll('span', attrs={'id': re.compile(accession + '.\d+_\d+')})
-            print('Reading atcg sequence for accession %s' % accession)
+            atgc_page_html = BeautifulSoup(driver.page_source, features='html.parser')
+            seq_list = atgc_page_html.findAll('span', attrs={'id': re.compile(accession + '.\d+_\d+')})
+            print('Reading atgc sequence for accession %s' % accession)
             temp_seq_store = ""
             for seq in seq_list:
                 if 'UTR' in seq.text:
@@ -274,14 +275,14 @@ if __name__ == '__main__':
     #
     # print(json.dumps(complete_gnome_url_dict, indent=4))
     ##################################################################
-    #       Read stored urls and open and store atcg strings         #
+    #       Read stored urls and open and store atgc strings         #
     ##################################################################
     # json_data = read_urls_from_serialized_json_file('complete_gnome_urls_store')
     ##################################################################
-    #       Read the empty accessions and store atcg strings again   #
+    #       Read the empty accessions and store atgc strings again   #
     ##################################################################
     json_data = read_as_json(filename='empty_accessions_read')
-    crawl_atcg_sequence_page(base_url='https://www.ncbi.nlm.nih.gov',
+    crawl_atgc_sequence_page(base_url='https://www.ncbi.nlm.nih.gov',
                              query_param='?expands-on=true',
                              accession_url_mapper=json_data,
                              chrome_path=sys.argv[1],
