@@ -171,7 +171,7 @@ class ATGCSequencePage(object):
         self.missed_parsed_pages = []
         self.accession_url_mapper = accession_url_mapper
         self.atgc_seq_storage_directory = atgc_seq_storage_directory
-        self.empty_web_pages_read = []
+        self.empty_web_pages_read = {}
         self.parsed_content = None
         self.scraped_atgc_sequence = ""
 
@@ -189,7 +189,7 @@ class ATGCSequencePage(object):
         time.sleep(time_in_seconds)
 
     def parse_web_page(self, html_tag='span', attr='id', accession_attr_value=None):
-        parsed_page = BeautifulSoup(self.driver.page_source)
+        parsed_page = BeautifulSoup(self.driver.page_source, features='html.parser')
         self.parsed_content = parsed_page.findAll(html_tag, attrs={attr: re.compile(accession_attr_value + '.\d+_\d+')})
 
     def get_atgc_sequence(self):
@@ -197,58 +197,45 @@ class ATGCSequencePage(object):
             if 'UTR' not in seq.text:
                 self.scraped_atgc_sequence += seq.text
         self.scraped_atgc_sequence = self.scraped_atgc_sequence.replace(' ', '')
+        if len(self.scraped_atgc_sequence) == 0:
+            self.check_if_empty_atcg_seq(seq)
+
+    def check_if_empty_atcg_seq(self, seq):
+        self.empty_web_pages_read.update({seq: self.accession_url_mapper[seq]})
 
     def serialize_atgc_sequence(self, accession):
         # TODO Check if directory exists;if not, create one!
         # create_directory_if_not_present
-        with open(self.directory + accession + '.txt', 'w') as writer:
+        with open(self.atgc_seq_storage_directory + accession + '.txt', 'w') as writer:
             writer.write(self.scraped_atgc_sequence)
 
 
-
 def crawl_atgc_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chrome_path=None, directory=None):
-    if accession_url_mapper is not None:
-        accessions_read = 0
-        empty_read = {}
-        driver = webdriver.Chrome(chrome_path)
-        for accession in accession_url_mapper:
-            try:
-                driver.get(base_url + accession_url_mapper[accession] + query_param)
-            except selenium.common.exceptions.TimeoutException as e:
-                empty_read[accession] = accession_url_mapper[accession]
-                continue
-            time.sleep(4)
-            atgc_page_html = BeautifulSoup(driver.page_source, features='html.parser')
-            seq_list = atgc_page_html.findAll('span', attrs={'id': re.compile(accession + '.\d+_\d+')})
-            print('Reading atgc sequence for accession %s' % accession)
-            temp_seq_store = ""
-            for seq in seq_list:
-                if 'UTR' in seq.text:
-                    continue
-                temp_seq_store += seq.text
-            temp_seq_store = temp_seq_store.replace(' ', '')
-
-            if len(temp_seq_store) == 0:
-                empty_read[accession] = accession_url_mapper[accession]
-            with open(directory + accession + '.txt', 'w') as writer:
-                writer.write(temp_seq_store)
-            accessions_read += 1
-            if accessions_read % 10 == 0:
-                print('%d/%d accessions written to file' % (accessions_read, len(accession_url_mapper)))
+    spider = ATGCSequencePage(chrome_path=chrome_path, accession_url_mapper=accession_url_mapper,base_url=base_url, atgc_seq_storage_directory=directory)
+    spider.open_chrome()
+    accessions_read = 0
+    for u in accession_url_mapper:
+        spider.go_to_url(accession_url_mapper[u], query_params=query_param)
+        spider.go_to_sleep(4)
+        spider.parse_web_page(html_tag='span', attr='id', accession_attr_value=u)
+        spider.serialize_atgc_sequence(u)
+        accessions_read += 1
+        if accessions_read % 10 == 0:
+            print('%d/%d accessions written to file' % (accessions_read, len(accession_url_mapper)))
 
         ######################################################################
         #           Write empty accessions in a file                        ##
         ######################################################################
-        if len(empty_read) != 0:
+        if len(spider.empty_web_pages_read) != 0:
             with open('empty_accessions_read', 'w') as writer:
-                json.dump(empty_read, writer)
+                json.dump(spider.empty_web_pages_read, writer)
 
         ######################################################################
         #                           Some stats                              ##
         ######################################################################
         print('#' * 60)
-        print('%d/%d accessions written' % (len(accession_url_mapper) - len(empty_read), len(accession_url_mapper)))
-        print('Empty accessions read \t: %d' % len(empty_read))
+        print('%d/%d accessions written' % (len(accession_url_mapper) - len(spider.empty_web_pages_read), len(accession_url_mapper)))
+        print('Empty accessions read \t: %d' % len(spider.empty_web_pages_read))
 
 
 def define_parser_args():
