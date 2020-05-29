@@ -173,6 +173,7 @@ class ATCGSequencePage(object):
         self.atcg_seq_storage_directory = atcg_seq_storage_directory
         self.empty_web_pages_read = []
         self.parsed_content = None
+        self.scraped_atcg_sequence = ""
 
     def open_chrome(self):
         self.driver = webdriver.Chrome(self.chrome_path)
@@ -191,18 +192,16 @@ class ATCGSequencePage(object):
         self.parsed_content = parsed_page.findAll(html_tag, attrs={attr: re.compile(accession_attr_value + '.\d+_\d+')})
 
     def get_atcg_sequence(self):
-        pass
+        for seq in self.parsed_content:
+            if 'UTR' not in seq.text:
+                self.scraped_atcg_sequence += seq.text
+        self.scraped_atcg_sequence = self.scraped_atcg_sequence.replace(' ', '')
 
-    def serialize_atcg_sequence(self):
-        pass
-
-    @staticmethod
-    def create_directory_if_not_present():
-        pass
-
-    @staticmethod
-    def write_to_file(file_name):
-        pass
+    def serialize_atcg_sequence(self, accession):
+        # TODO Check if directory exists;if not, create one!
+        # create_directory_if_not_present
+        with open(self.directory + accession + '.txt', 'w') as writer:
+            writer.write(self.scraped_atcg_sequence)
 
 
 
