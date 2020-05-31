@@ -21,7 +21,7 @@ class NCBICrawler(object):
         self.chrome_path = chrome_path
         self.nucleotide_urls_count = 0
         self.collected_urls_counter = 0
-        self.ncbi_sars_cov2_datapage = NcbiSarsCov2DataPage.get_instance()
+        self.ncbi_sars_cov2_datapage = NcbiSarsCov2DataPage()
         self.accession_rel_url_html = []
         self.genbank_rel_url_html = []
         self.gnome_urls_store = {}
@@ -67,7 +67,7 @@ class NCBICrawler(object):
         if "css_selector" == by:
             self.accession_rel_url_html = self.driver.find_elements_by_css_selector(element)
         else:
-            self.accession_rel_url_html = self.driver.find_element_by_xpath(element)
+            self.accession_rel_url_html = self.driver.find_elements_by_xpath(element)
 
     def collect_rel_url(self, by='css_selector', element=None):
         if "css_selector" == by:
@@ -90,7 +90,7 @@ class NCBICrawler(object):
         self.gnome_urls_store.update({self.genbank_rel_url_html.text: self.genbank_rel_url_html['href']})
 
     def close_details_modal(self):
-        self.close_brief_details_modal = self.driver.find_element_by_xpath(self.ncbi_nucleotide_page.close_button_on_details_modal)
+        self.close_brief_details_modal = self.driver.find_element_by_xpath(self.ncbi_sars_cov2_datapage.close_button_on_details_modal)
         self.close_brief_details_modal.click()
 
     def go_to_next_page(self):
@@ -107,50 +107,62 @@ class NCBICrawler(object):
     def find_rel_url_on_detailed_modal(self, element=None):
         self.details_panel_for_accession = self.parsed_content.find('a', attrs={'title': 'Go to GenBank record'})
 
+    def write_to_file(self):
+        with open("data/third_run/complete_gnome_urls_store", "w") as data_file_ptr:
+            json.dump(self.complete_gnome_url_dict, data_file_ptr)
+
+    def go_to_next_page(self):
+        close_button = self.driver.find_element_by_xpath(self.ncbi_nucleotide_page.next_page_button_element)
+        close_button.click()
+
+
 def store_genome_page_urls(url=None, chrome_path=None):
-    ncbi_nucleotide_page = NCBICrawler()
     ncbi_nucleotide_page_crawler = NCBICrawler(seed_url=url, chrome_path=chrome_path)
     ncbi_nucleotide_page_crawler.open_chrome()
     ncbi_nucleotide_page_crawler.go_to_seed_url()
     pages = range(15)
-    try:
-        for page in range(15):
-            print("Scraping page \t: %d" % page)
-            ncbi_nucleotide_page_crawler.explicit_wait_for_element(element_to_wait_for='', locate_element_by='By.CSS_SELECTOR')
-            NCBICrawler.sleep(time_in_sec=5)
-            ncbi_nucleotide_page_crawler.collect_accession_rel_url(by='css_selector', element=ncbi_nucleotide_page)
-            ncbi_nucleotide_page_crawler.set_collected_urls_counter()
-            if ncbi_nucleotide_page.get_collected_urls_counter() >= 200:
-                NCBICrawler.sleep(5)
-                ncbi_nucleotide_page_crawler.collect_accession_rel_url(by='css_selector', element=ncbi_nucleotide_page)
-            print("Total number of accessions\t: %d" % ncbi_nucleotide_page_crawler.get_accession_rel_url_counter())
 
-            for link in ncbi_nucleotide_page_crawler.accession_rel_url_html:
-                try:
-                    ncbi_nucleotide_page_crawler.increment_url_count()
-                    ncbi_nucleotide_page_crawler.click(link)
-                except selenium.common.exceptions.StaleElementReferenceException:
-                    print("Exception encountered! \tRe-loading the page...")
-                    ncbi_nucleotide_page_crawler.collect_accession_rel_url(by='css_selector', element='[title="Expand record details"]')
-                    ncbi_nucleotide_page_crawler.sleep(5)
-                    ncbi_nucleotide_page_crawler.click_element(link)
-                ncbi_nucleotide_page_crawler.parse_web_page()
-                ncbi_nucleotide_page_crawler.get_genbank_url()
-                ncbi_nucleotide_page_crawler.store_genome_url()
-                ncbi_nucleotide_page_crawler.explicit_wait_for_element(element_to_wait_for=ncbi_nucleotide_page.close_brief_details_modal,
-                                                                       locate_element_by='By.XPATH', timeout_in_sec=5)
+    for page in range(16):
+        print("Scraping page \t: %d" % page)
+        ncbi_nucleotide_page_crawler.explicit_wait_for_element(element_to_wait_for=ncbi_nucleotide_page_crawler.ncbi_sars_cov2_datapage.accession_element, locate_element_by='By.CSS_SELECTOR')
+        NCBICrawler.sleep(time_in_sec=5)
+        ncbi_nucleotide_page_crawler.collect_accession_rel_url(by='css_selector', element=ncbi_nucleotide_page_crawler.ncbi_sars_cov2_datapage.accession_element)
+        ncbi_nucleotide_page_crawler.set_collected_urls_counter()
+        if ncbi_nucleotide_page_crawler.get_collected_urls_counter() >= 200:
+            NCBICrawler.sleep(5)
+            ncbi_nucleotide_page_crawler.collect_accession_rel_url(by='css_selector', element=ncbi_nucleotide_page_crawler.ncbi_sars_cov2_datapage.accession_element)
+        print("Total number of accessions\t: %d" % ncbi_nucleotide_page_crawler.get_accession_rel_url_counter())
+
+        for link in ncbi_nucleotide_page_crawler.accession_rel_url_html:
+            try:
+                ncbi_nucleotide_page_crawler.increment_url_count()
+                NCBICrawler.sleep(2)
+                ncbi_nucleotide_page_crawler.click_element(link)
+            except selenium.common.exceptions.StaleElementReferenceException:
+                print("Exception encountered! \tRe-loading the page...")
+                ncbi_nucleotide_page_crawler.collect_accession_rel_url(by='css_selector', element='[title="Expand record details"]')
                 ncbi_nucleotide_page_crawler.sleep(5)
-                ncbi_nucleotide_page_crawler.close_details_modal()
-                ncbi_nucleotide_page_crawler.click_element()
-            if len(ncbi_nucleotide_page_crawler.get_accession_rel_url_counter()) < 200:
-                break
-            ###############################################################################################
-            #               Find the button to go the next page                                           #
-            ###############################################################################################
-            # next_page_button = driver.find_element_by_xpath(ncbi_nucleotide_page.next_page_button_element)
-            # next_page_button.send_keys('\n')
-    except selenium.common.exceptions.InvalidElementStateException:
-        pass
+                ncbi_nucleotide_page_crawler.click_element(link)
+            except selenium.common.exceptions.ElementNotVisibleException:
+                print("Exception encountered! \tRe-loading the page...")
+                ncbi_nucleotide_page_crawler.collect_accession_rel_url(by='css_selector',
+                                                                       element='[title="Expand record details"]')
+                ncbi_nucleotide_page_crawler.sleep(5)
+                ncbi_nucleotide_page_crawler.click_element(link)
+
+            ncbi_nucleotide_page_crawler.parse_web_page()
+            ncbi_nucleotide_page_crawler.get_genbank_url()
+            ncbi_nucleotide_page_crawler.store_genome_url()
+            ncbi_nucleotide_page_crawler.explicit_wait_for_element(element_to_wait_for=ncbi_nucleotide_page_crawler.ncbi_sars_cov2_datapage.close_button_on_details_modal,
+                                                                   locate_element_by='By.XPATH', timeout_in_sec=5)
+            NCBICrawler.sleep(time_in_sec=2)
+            ncbi_nucleotide_page_crawler.close_details_modal()
+            ncbi_nucleotide_page_crawler.sleep(5)
+
+        if len(ncbi_nucleotide_page_crawler.get_accession_rel_url_counter()) < 200:
+            break
+        next_page_button = ncbi_nucleotide_page_crawler.go_to_next_page()
+        next_page_button.send_keys('\n')
 
 
 class ATGCSequencePageCrawler(object):
@@ -226,7 +238,7 @@ class ATGCSequencePageCrawler(object):
 
 
 def crawl_atgc_sequence_page(base_url=None, query_param=None, accession_url_mapper=None, chrome_path=None, directory=None):
-    spider = ATGCSequencePage(chrome_path=chrome_path, accession_url_mapper=accession_url_mapper,base_url=base_url, atgc_seq_storage_directory=directory)
+    spider = ATGCSequencePageCrawler(chrome_path=chrome_path, accession_url_mapper=accession_url_mapper,base_url=base_url, atgc_seq_storage_directory=directory)
     spider.open_chrome()
     accessions_read = 0
     for u in accession_url_mapper:
@@ -240,11 +252,6 @@ def crawl_atgc_sequence_page(base_url=None, query_param=None, accession_url_mapp
         spider.serialize_empty_web_pages_accessions()
 
 
-def define_parser_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-rel-url', 'collect_relative_urls')
-
-
 if __name__ == '__main__':
     import sys
 
@@ -254,15 +261,7 @@ if __name__ == '__main__':
     #               Store genome urls from accession links          ##
     ##################################################################
     # url = https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
-    # complete_gnome_url_dict = store_gnome_urls(url=sys.argv[1], chromepath=sys.argv[2])
-    # print(complete_gnome_url_dict)
-    ##################################################################
-    #       Store the gnome urls in a file                          ##
-    ##################################################################
-    # with open("complete_gnome_urls_store", "w") as gnome_url_data_store:
-    #     json.dump(complete_gnome_url_dict, gnome_url_data_store)
-    #
-    # print(json.dumps(complete_gnome_url_dict, indent=4))
+    store_genome_page_urls(url=sys.argv[1], chrome_path=sys.argv[2])
     ##################################################################
     #       Read stored urls and open and store atgc strings         #
     ##################################################################
