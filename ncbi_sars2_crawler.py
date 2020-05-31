@@ -30,9 +30,11 @@ def store_gnome_urls(url=None, chromepath=None):
         driver = webdriver.Chrome(chromepath)
         driver.get(url)
         url_count = 0
-        pages = range(15)
+        c = 0
+        pages = range(16)
+        nucleotide_details_dict = {}
         try:
-            for page in range(15):
+            for page in range(16):
                 ########################################################
                 #               Get the page first                     #
                 ########################################################
@@ -63,7 +65,22 @@ def store_gnome_urls(url=None, chromepath=None):
                         link.click()
                     source_code = BeautifulSoup(driver.page_source, features='html.parser')
                     details_panel_for_accession = source_code.find('a', attrs={'title': 'Go to GenBank record'})
-                    gnome_urls_store.update({details_panel_for_accession.text:details_panel_for_accession['href']})
+                    gnome_urls_store.update({details_panel_for_accession.text: details_panel_for_accession['href']})
+                    ################################################################################
+                    #           Store other details as well                                        #
+                    ################################################################################
+                    nucleotide_details_panel = source_code.find('span', attrs={'id': 'detailProp'})
+                    div_data = nucleotide_details_panel.findAll('div')
+                    temp_dict = {}
+                    c += 1
+                    for data in div_data:
+                        key, value = data.text.split(':')
+                        temp_dict[key] = value
+
+                    nucleotide_details_dict.update({details_panel_for_accession.text: temp_dict})
+                    if c == 1:
+                        print(nucleotide_details_dict)
+                        print("temp: ", temp_dict)
                     element = WebDriverWait(driver, 5).until(
                         EC.presence_of_element_located((By.XPATH, "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i"))
                     )
@@ -80,7 +97,7 @@ def store_gnome_urls(url=None, chromepath=None):
                 next_page_button.send_keys('\n')
         except selenium.common.exceptions.InvalidElementStateException:
             return gnome_urls_store
-    return gnome_urls_store
+    return gnome_urls_store, nucleotide_details_dict
 
 
 def read_urls_from_serialized_json_file(file_path=None):
@@ -151,15 +168,21 @@ if __name__ == '__main__':
     #               Store genome urls from accession links          ##
     ##################################################################
     # url = https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
-    # complete_gnome_url_dict = store_gnome_urls(url=sys.argv[1], chromepath=sys.argv[2])
-    # print(complete_gnome_url_dict)
+    complete_gnome_url_dict, nucleotide_details_dict = store_gnome_urls(url=sys.argv[1], chromepath=sys.argv[2])
+    print(complete_gnome_url_dict)
     ##################################################################
     #       Store the gnome urls in a file                          ##
     ##################################################################
-    # with open("complete_gnome_urls_store", "w") as gnome_url_data_store:
-    #     json.dump(complete_gnome_url_dict, gnome_url_data_store)
-    #
-    # print(json.dumps(complete_gnome_url_dict, indent=4))
+    with open("data/third_run/complete_gnome_urls_store", "w") as gnome_url_data_store:
+        json.dump(complete_gnome_url_dict, gnome_url_data_store)
+
+    print(json.dumps(complete_gnome_url_dict, indent=4))
+
+    with open("data/third_run/nucleotide_details_dict", "w") as nucleotide_details_store:
+        json.dump(nucleotide_details_dict, nucleotide_details_store)
+
+    print(json.dumps(nucleotide_details_dict, indent=4))
+
     ##################################################################
     #       Read stored urls and open and store atcg strings         #
     ##################################################################
@@ -167,12 +190,12 @@ if __name__ == '__main__':
     ##################################################################
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
-    json_data = read_as_json(filename='empty_accessions_read')
-    store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
-                      query_param='?expands-on=true',
-                      accession_url_mapper=json_data,
-                      chromepath=sys.argv[1],
-                      directory=sys.argv[2])
+    # json_data = read_as_json(filename='empty_accessions_read')
+    # store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
+    #                   query_param='?expands-on=true',
+    #                   accession_url_mapper=json_data,
+    #                   chromepath=sys.argv[1],
+    #                   directory=sys.argv[2])
     tf = time.time()
     end_time = time.asctime()
     print('Time taken for the crawl \t: %f' % ((tf - t0) / 3600))
