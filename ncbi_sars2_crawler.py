@@ -166,7 +166,6 @@ if __name__ == '__main__':
     parser.add_argument('--url', type=str, help='Enter the ncbi url')
     parser.add_argument('--chromepath', type=str, help='Path to chromepath')
     parser.add_argument('--directory', type=str, help='Enter the directory to store the results.')
-    parser.add_argument('--atgc_url', type=str, help='atgc url which has the atgc sequence')
     args = parser.parse_args()
     chromepath = args.chromepath
     url = args.url
@@ -182,12 +181,14 @@ if __name__ == '__main__':
     ##################################################################
     #       Store the gnome urls in a file                          ##
     ##################################################################
-    filename = args.atgc_url
     with open("data/third_run/complete_gnome_urls_store", "w") as gnome_url_data_store:
         json.dump(complete_gnome_url_dict, gnome_url_data_store)
 
     print(json.dumps(complete_gnome_url_dict, indent=4))
 
+    ##################################################################
+    #       Store the metadata of accessions in a file              ##
+    ##################################################################
     with open("data/third_run/nucleotide_details_dict", "w") as nucleotide_details_store:
         json.dump(nucleotide_details_dict, nucleotide_details_store)
 
@@ -196,7 +197,7 @@ if __name__ == '__main__':
     ##################################################################
     #       Read stored urls and open and store atcg strings         #
     ##################################################################
-    # json_data = read_urls_from_serialized_json_file('complete_gnome_urls_store')
+    json_data = read_urls_from_serialized_json_file('complete_gnome_urls_store')
     ##################################################################
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
