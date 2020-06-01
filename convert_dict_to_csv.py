@@ -4,6 +4,7 @@ def get_json_from_file(filename='nucleotide_details_dict'):
         x = json.load(fp)
     return x
 
+
 def dict_to_csv(filename='metadata_20200531.csv', dict={}):
     with open('data/third_run/' + filename, 'w') as fp:
         fp.write('Accession,Collection Date,Geo Location\n')

@@ -161,14 +161,22 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
 
 if __name__ == '__main__':
     import sys
-
+    import argparse
+    parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
+    parser.add_argument('--url', type=str, help='Enter the ncbi url')
+    parser.add_argument('--chromepath', type=str, help='Path to chromepath')
+    parser.add_argument('--directory', type=str, help='Enter the directory to store the results.')
+    args = parser.parse_args()
+    chromepath = args.chromepath
+    url = args.url
+    store_accession_rel_url = args.accession_url_store
     start_time = time.asctime()
     t0 = time.time()
     ##################################################################
     #               Store genome urls from accession links          ##
     ##################################################################
     # url = https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
-    complete_gnome_url_dict, nucleotide_details_dict = store_gnome_urls(url=sys.argv[1], chromepath=sys.argv[2])
+    complete_gnome_url_dict, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chromepath)
     print(complete_gnome_url_dict)
     ##################################################################
     #       Store the gnome urls in a file                          ##
@@ -178,6 +186,9 @@ if __name__ == '__main__':
 
     print(json.dumps(complete_gnome_url_dict, indent=4))
 
+    ##################################################################
+    #       Store the metadata of accessions in a file              ##
+    ##################################################################
     with open("data/third_run/nucleotide_details_dict", "w") as nucleotide_details_store:
         json.dump(nucleotide_details_dict, nucleotide_details_store)
 
@@ -186,7 +197,7 @@ if __name__ == '__main__':
     ##################################################################
     #       Read stored urls and open and store atcg strings         #
     ##################################################################
-    # json_data = read_urls_from_serialized_json_file('complete_gnome_urls_store')
+    json_data = read_urls_from_serialized_json_file('complete_gnome_urls_store')
     ##################################################################
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
