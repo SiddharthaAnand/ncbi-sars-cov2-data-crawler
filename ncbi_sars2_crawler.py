@@ -164,11 +164,9 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
     parser.add_argument('--url', type=str, help='Enter the ncbi url')
-    parser.add_argument('--directory', type=str, help='Enter the directory to store the results.')
-    parser.add_argument('--accession_url_store', type=bool, help='Store the accession relative urls.')
-    parser.add_argument('--store_atgc_seq', type=bool, help='Store atgc sequence in XXXX.txt in the mentioned directory')
-    parser.add_argument('--atgc_url', type=str, help='atgc url which has the atgc sequence')
     parser.add_argument('--chromepath', type=str, help='Path to chromepath')
+    parser.add_argument('--directory', type=str, help='Enter the directory to store the results.')
+    parser.add_argument('--atgc_url', type=str, help='atgc url which has the atgc sequence')
     args = parser.parse_args()
     chromepath = args.chromepath
     url = args.url
