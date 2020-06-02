@@ -159,8 +159,15 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
         print('Empty accessions read \t: %d' % len(empty_read))
 
 
-def store_metadata_of_nucleotide():
-    pass
+def store_metadata_of_nucleotide(file_with_path="data/third_run/nucleotide_details_dict"):
+    """
+    Store metadata for the nucleotide
+    :param file_with_path:
+    :return: None
+    """
+    with open(file_with_path, "w") as nucleotide_details_store:
+        json.dump(nucleotide_details_dict, nucleotide_details_store)
+
 
 if __name__ == '__main__':
     import argparse
