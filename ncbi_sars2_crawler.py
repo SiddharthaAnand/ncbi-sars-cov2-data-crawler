@@ -169,6 +169,11 @@ def store_metadata_of_nucleotide(file_with_path="data/third_run/nucleotide_detai
         json.dump(nucleotide_details_dict, nucleotide_details_store)
 
 
+def serialize_genome_urls(file_with_path="data/third_run/complete_gnome_urls_store"):
+    with open(file_with_path, "w") as gnome_url_data_store:
+        json.dump(complete_gnome_url_dict, gnome_url_data_store)
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
@@ -179,14 +184,12 @@ if __name__ == '__main__':
     chromepath = args.chromepath
     url = args.url
     store_accession_rel_url = args.accession_url_store
+    file_with_path = args.directory
     start_time = time.asctime()
     t0 = time.time()
     # url = https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
     complete_gnome_url_dict, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chromepath)
-    print(complete_gnome_url_dict)
-    with open("data/third_run/complete_gnome_urls_store", "w") as gnome_url_data_store:
-        json.dump(complete_gnome_url_dict, gnome_url_data_store)
-
+    serialize_genome_urls(file_with_path=file_with_path)
 
     ##################################################################
     #       Read stored urls and open and store atcg strings         #
