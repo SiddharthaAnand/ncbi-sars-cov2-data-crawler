@@ -192,13 +192,14 @@ if __name__ == '__main__':
     https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20
     respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
     """
-    url, chromepath, file_with_path = init_args_parser_with_commands()
+    url, chrome_driver_path, relative_file_path = init_args_parser_with_commands()
     start_time = time.asctime()
     t0 = time.time()
-    genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chromepath)
-    serialize_accession_to_rel_url_mapper(rel_file_path=file_with_path, genome_to_url_mapper_dict=genome_rel_url_mapper)
+    genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chrome_driver_path)
+    serialize_accession_to_rel_url_mapper(rel_file_path=relative_file_path,
+                                          genome_to_url_mapper_dict=genome_rel_url_mapper)
     serialize_metadata_of_nucleotide(nucleotide_details_dict=nucleotide_details_dict)
-    json_data = read_urls_from_serialized_json_file(file_path=file_with_path)
+    json_data = read_urls_from_serialized_json_file(file_path=relative_file_path)
     ##################################################################
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
