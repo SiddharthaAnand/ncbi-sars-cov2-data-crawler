@@ -181,10 +181,10 @@ def init_args_parser_with_commands():
     parser.add_argument('--chromepath', type=str, help='Path to chromepath')
     parser.add_argument('--filepath', type=str, help='Enter the relative file address to store the results.')
     args = parser.parse_args()
-    chromepath = args.chromepath
-    url = args.url
-    file_with_path = args.filepath
-    return url, chromepath, file_with_path
+    chrome_path = args.chromepath
+    absolute_ncbi_url = args.url
+    file_name = args.filepath
+    return absolute_ncbi_url, chrome_path, file_name
 
 
 if __name__ == '__main__':
