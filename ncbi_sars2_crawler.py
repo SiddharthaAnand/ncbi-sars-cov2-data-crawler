@@ -179,11 +179,11 @@ def init_args_parser_with_commands():
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
     parser.add_argument('--url', type=str, help='Enter the ncbi url')
     parser.add_argument('--chromepath', type=str, help='Path to chromepath')
-    parser.add_argument('--directory', type=str, help='Enter the directory to store the results.')
+    parser.add_argument('--filepath', type=str, help='Enter the relative file address to store the results.')
     args = parser.parse_args()
     chromepath = args.chromepath
     url = args.url
-    file_with_path = args.directory
+    file_with_path = args.filepath
     return url, chromepath, file_with_path
 
 
