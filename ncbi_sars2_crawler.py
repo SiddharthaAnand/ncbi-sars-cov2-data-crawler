@@ -159,19 +159,19 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
         print('Empty accessions read \t: %d' % len(empty_read))
 
 
-def store_metadata_of_nucleotide(file_with_path="data/third_run/nucleotide_details_dict"):
+def serialize_metadata_of_nucleotide(rel_file_name="data/third_run/nucleotide_details_dict", nucleotide_details_dict=None):
     """
     Store metadata for the nucleotide
-    :param file_with_path:
+    :param rel_file_name:
     :return: None
     """
-    with open(file_with_path, "w") as nucleotide_details_store:
-        json.dump(nucleotide_details_dict, nucleotide_details_store)
+    with open(rel_file_name, "w") as fp:
+        json.dump(nucleotide_details_dict, fp)
 
 
-def serialize_genome_urls(file_with_path="data/third_run/complete_gnome_urls_store"):
-    with open(file_with_path, "w") as gnome_url_data_store:
-        json.dump(complete_gnome_url_dict, gnome_url_data_store)
+def serialize_accession_to_rel_url_mapper(rel_file_path="data/third_run/genome_to_url_mapper_dict", genome_to_url_mapper_dict=None):
+    with open(rel_file_path, "w") as fp:
+        json.dump(genome_to_url_mapper_dict, fp)
 
 
 def init_args_parser_with_commands():
@@ -188,11 +188,16 @@ def init_args_parser_with_commands():
 
 
 if __name__ == '__main__':
+    """
+    https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20
+    respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
+    """
+    url, chromepath, file_with_path = init_args_parser_with_commands()
     start_time = time.asctime()
     t0 = time.time()
-    # url = https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
-    complete_gnome_url_dict, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chromepath)
-    serialize_genome_urls(file_with_path=file_with_path)
+    genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chromepath)
+    serialize_accession_to_rel_url_mapper(rel_file_path=file_with_path, genome_to_url_mapper_dict=genome_rel_url_mapper)
+    serialize_metadata_of_nucleotide(nucleotide_details_dict=nucleotide_details_dict)
 
     ##################################################################
     #       Read stored urls and open and store atcg strings         #
