@@ -26,7 +26,7 @@ $ virtualenv -p /usr/bin/python3.5 venv
 
 ## How to run?
 ```
-$ python ncbi_sars2_crawler.py
+$ python ncbi_sars2_crawler.py --url 'https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete' --chromepath /home/sid/github/chromedriver --filepath fourth_run >> logs_20200602
 ```
 ## Work in progress
 - Add option arguments parser to handle the code with command-line
