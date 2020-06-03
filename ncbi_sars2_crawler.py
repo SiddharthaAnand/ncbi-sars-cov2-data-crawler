@@ -100,20 +100,6 @@ def store_gnome_urls(url=None, chromepath=None):
     return gnome_urls_store, nucleotide_details_dict
 
 
-def read_urls_from_serialized_json_file(file_path=None):
-    """
-    Read the relative urls from the serialized json file.
-    Those urls contain the atcg sequence data.
-    :param file_path: The path to the file which stores the serialized url.
-    :return:
-    """
-    if file_path is not None:
-        with open(file_path, 'r') as data_file:
-            accession_url_mapper = json.load(data_file)
-        return accession_url_mapper
-    raise FileNotFoundError
-
-
 def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
     if accession_url_mapper is not None:
         accessions_read = 0
@@ -138,7 +124,7 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
 
             if len(temp_seq_store) == 0:
                 empty_read[accession] = accession_url_mapper[accession]
-            with open(directory + accession + '.txt', 'w') as writer:
+            with open("data/" + directory + "/" + accession + '.txt', 'w') as writer:
                 writer.write(temp_seq_store)
             accessions_read += 1
             if accessions_read % 10 == 0:
@@ -159,19 +145,34 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
         print('Empty accessions read \t: %d' % len(empty_read))
 
 
-def serialize_metadata_of_nucleotide(rel_file_name="data/third_run/nucleotide_details_dict", nucleotide_details_dict=None):
+def serialize_metadata_of_nucleotide(run_no=None, nucleotide_details_dict=None):
     """
     Store metadata for the nucleotide
-    :param rel_file_name:
+    :param run_no:
+    :param nucleotide_details_dict:
     :return: None
     """
-    with open(rel_file_name, "w") as fp:
+    with open("data/" + run_no + "/nucleotide_details_dict", "w") as fp:
         json.dump(nucleotide_details_dict, fp)
 
 
-def serialize_accession_to_rel_url_mapper(rel_file_path="data/third_run/genome_to_url_mapper_dict", genome_to_url_mapper_dict=None):
-    with open(rel_file_path, "w") as fp:
+def serialize_accession_to_rel_url_mapper(rel_file_path=None, genome_to_url_mapper_dict=None):
+    with open("data/" + rel_file_path + "/genome_to_url_mapper_dict", "w") as fp:
         json.dump(genome_to_url_mapper_dict, fp)
+
+
+def read_urls_from_serialized_json_file(file_path=None):
+    """
+    Read the relative urls from the serialized json file.
+    Those urls contain the atcg sequence data.
+    :param file_path: The path to the file which stores the serialized url.
+    :return:
+    """
+    if file_path is not None:
+        with open("data/" + file_path + "/genome_to_url_mapper_dict", 'r') as data_file:
+            accession_url_mapper = json.load(data_file)
+        return accession_url_mapper
+    raise FileNotFoundError
 
 
 def init_args_parser_with_commands():
@@ -198,17 +199,18 @@ if __name__ == '__main__':
     genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chrome_driver_path)
     serialize_accession_to_rel_url_mapper(rel_file_path=relative_file_path,
                                           genome_to_url_mapper_dict=genome_rel_url_mapper)
-    serialize_metadata_of_nucleotide(nucleotide_details_dict=nucleotide_details_dict)
+    serialize_metadata_of_nucleotide(run_no=relative_file_path,
+                                     nucleotide_details_dict=nucleotide_details_dict)
     json_data = read_urls_from_serialized_json_file(file_path=relative_file_path)
     ##################################################################
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
     # json_data = read_as_json(filename='empty_accessions_read')
-    # store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
-    #                   query_param='?expands-on=true',
-    #                   accession_url_mapper=json_data,
-    #                   chromepath=sys.argv[1],
-    #                   directory=sys.argv[2])
+    store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
+                      query_param='?expands-on=true',
+                      accession_url_mapper=json_data,
+                      chromepath=chrome_driver_path,
+                      directory=relative_file_path)
     tf = time.time()
     end_time = time.asctime()
     print('Time taken for the crawl \t: %f' % ((tf - t0) / 3600))
