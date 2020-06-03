@@ -55,3 +55,4 @@ arguments.
 - Figure out ways to use headless browser and use multiple requests
 at the same time.
 - Incremental crawling by checking the newly updated dates and new data.
+- Create a directory if not present, when reading file path from the command line.
