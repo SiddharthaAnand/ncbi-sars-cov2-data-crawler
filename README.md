@@ -50,9 +50,9 @@ $ python ncbi_sars2_crawler.py -h
 ```
 
 ## Work in progress
-- Add option arguments parser to handle the code with command-line
+- [x] Add option arguments parser to handle the code with command-line
 arguments.
-- Figure out ways to use headless browser and use multiple requests
+- [ ] Figure out ways to use headless browser and use multiple requests
 at the same time.
-- Incremental crawling by checking the newly updated dates and new data.
-- Create a directory if not present, when reading file path from the command line.
+- [ ] Incremental crawling by checking the newly updated dates and new data.
+- [x] Create a directory if not present, when reading file path from the command line.
