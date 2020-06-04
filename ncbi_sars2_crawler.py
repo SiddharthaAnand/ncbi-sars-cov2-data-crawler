@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from serialize_data_to_file import read_as_json
+from serializer_deserializer import *
 
 
 def store_gnome_urls(url=None, chromepath=None):
@@ -145,36 +145,6 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
         print('Empty accessions read \t: %d' % len(empty_read))
 
 
-def serialize_metadata_of_nucleotide(run_no=None, nucleotide_details_dict=None):
-    """
-    Store metadata for the nucleotide
-    :param run_no:
-    :param nucleotide_details_dict:
-    :return: None
-    """
-    with open("data/" + run_no + "/nucleotide_details_dict", "w") as fp:
-        json.dump(nucleotide_details_dict, fp)
-
-
-def serialize_accession_to_rel_url_mapper(rel_file_path=None, genome_to_url_mapper_dict=None):
-    with open("data/" + rel_file_path + "/genome_to_url_mapper_dict", "w") as fp:
-        json.dump(genome_to_url_mapper_dict, fp)
-
-
-def read_urls_from_serialized_json_file(file_path=None):
-    """
-    Read the relative urls from the serialized json file.
-    Those urls contain the atcg sequence data.
-    :param file_path: The path to the file which stores the serialized url.
-    :return:
-    """
-    if file_path is not None:
-        with open("data/" + file_path + "/genome_to_url_mapper_dict", 'r') as data_file:
-            accession_url_mapper = json.load(data_file)
-        return accession_url_mapper
-    raise FileNotFoundError
-
-
 def init_args_parser_with_commands():
     import argparse
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
@@ -196,12 +166,15 @@ if __name__ == '__main__':
     url, chrome_driver_path, relative_file_path = init_args_parser_with_commands()
     start_time = time.asctime()
     t0 = time.time()
-    genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url, chromepath=chrome_driver_path)
+    genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url,
+                                                                      chromepath=chrome_driver_path)
     serialize_accession_to_rel_url_mapper(rel_file_path=relative_file_path,
                                           genome_to_url_mapper_dict=genome_rel_url_mapper)
-    serialize_metadata_of_nucleotide(run_no=relative_file_path,
+
+    serialize_metadata_of_nucleotide(rel_file_path=relative_file_path,
                                      nucleotide_details_dict=nucleotide_details_dict)
-    json_data = read_urls_from_serialized_json_file(file_path=relative_file_path)
+
+    json_data = read_urls_from_serialized_json_file(rel_file_path=relative_file_path)
     ##################################################################
     #       Read the empty accessions and store atcg strings again   #
     ##################################################################
