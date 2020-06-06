@@ -148,14 +148,15 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
 def init_args_parser_with_commands():
     import argparse
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
-    parser.add_argument('--url', type=str, help='Enter the ncbi url')
+    # parser.add_argument('--url', type=str, help='Enter the ncbi url')
     parser.add_argument('--chromepath', type=str, help='Path to chrome driver')
     parser.add_argument('--filepath', type=str, help='Enter the relative file address to store the results.')
+    parser.add_argument('--')
     args = parser.parse_args()
     chrome_path = args.chromepath
-    absolute_ncbi_url = args.url
+    # absolute_ncbi_url = args.url
     file_name = args.filepath
-    return absolute_ncbi_url, chrome_path, file_name
+    return chrome_path, file_name
 
 
 if __name__ == '__main__':
@@ -163,7 +164,9 @@ if __name__ == '__main__':
     https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20
     respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
     """
-    url, chrome_driver_path, relative_file_path = init_args_parser_with_commands()
+    url = "https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20\
+respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete"
+    chrome_driver_path, relative_file_path = init_args_parser_with_commands()
     start_time = time.asctime()
     t0 = time.time()
     genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url,
