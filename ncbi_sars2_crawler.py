@@ -1,4 +1,5 @@
 import re
+import sys
 import time
 import json
 import selenium
@@ -151,11 +152,16 @@ def init_args_parser_with_commands():
     # parser.add_argument('--url', type=str, help='Enter the ncbi url')
     parser.add_argument('--chromepath', type=str, help='Path to chrome driver')
     parser.add_argument('--filepath', type=str, help='Enter the relative file address to store the results.')
-    parser.add_argument('--')
     args = parser.parse_args()
     chrome_path = args.chromepath
     # absolute_ncbi_url = args.url
     file_name = args.filepath
+
+    if file_name is None or chrome_path is None:
+        print('Incorrect or empty parameters given')
+        print('Please type \n\t $ python ncbi_sars2_crawler.py -h\n for more details')
+        sys.exit(-1)
+
     return chrome_path, file_name
 
 
