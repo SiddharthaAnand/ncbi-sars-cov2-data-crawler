@@ -105,6 +105,7 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
     if accession_url_mapper is not None:
         accessions_read = 0
         empty_read = {}
+
         driver = webdriver.Chrome(chromepath)
         for accession in accession_url_mapper:
             try:
@@ -151,41 +152,52 @@ def init_args_parser_with_commands():
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
     parser.add_argument('--chromepath', type=str, help='Path to chrome driver')
     parser.add_argument('--filepath', type=str, help='Enter the relative file address to store the results.')
+    parser.add_argument('crawl_timedout_pages', type=bool, help='Crawl the left over pages which were timed out')
     args = parser.parse_args()
     chrome_path = args.chromepath
     file_name = args.filepath
+    crawl_timedout_pages = args.crawl_timed_out
 
     if file_name is None or chrome_path is None:
         print('Incorrect or empty parameters given')
         print('Please type \n\t $ python ncbi_sars2_crawler.py -h\n for more details')
         sys.exit(-1)
 
-    return chrome_path, file_name
+    return chrome_path, file_name, crawl_timedout_pages
 
 
 if __name__ == '__main__':
-    chrome_driver_path, relative_file_path = init_args_parser_with_commands()
+    chrome_driver_path, relative_file_path, crawl_timedout_pages = init_args_parser_with_commands()
     base_url = "https://www.ncbi.nlm.nih.gov"
     path_params = "/labs/virus/vssi/#/virus"
     query_params = "?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete"
     url = base_url + path_params + query_params
     start_time = time.asctime()
     t0 = time.time()
-    nucleotide_relative_url_dict, nucleotide_details_dict = crawl_nucleotide_relative_url(url=url,
-                                                                                          chromepath=chrome_driver_path)
-    serialize_to_json(rel_file_path=relative_file_path,
-                      genome_to_url_mapper_dict=nucleotide_relative_url_dict)
+    if chrome_driver_path is not None and relative_file_path is not None:
+        nucleotide_relative_url_dict, nucleotide_details_dict = crawl_nucleotide_relative_url(url=url,
+                                                                                              chromepath=chrome_driver_path)
+        serialize_to_json(rel_file_path=relative_file_path,
+                          genome_to_url_mapper_dict=nucleotide_relative_url_dict)
 
-    serialize_metadata_of_nucleotide(rel_file_path=relative_file_path,
-                                     nucleotide_details_dict=nucleotide_details_dict)
+        serialize_metadata_of_nucleotide(rel_file_path=relative_file_path,
+                                         nucleotide_details_dict=nucleotide_details_dict)
 
-    json_data = read_urls_from_serialized_json_file(rel_file_path=relative_file_path)
+        json_data = read_urls_from_serialized_json_file(rel_file_path=relative_file_path)
 
-    store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
-                      query_param='?expands-on=true',
-                      accession_url_mapper=json_data,
-                      chromepath=chrome_driver_path,
-                      directory=relative_file_path)
+        store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
+                          query_param='?expands-on=true',
+                          accession_url_mapper=json_data,
+                          chromepath=chrome_driver_path,
+                          directory=relative_file_path)
+    if crawl_timedout_pages is not None:
+        json_data = read_as_json(rel_file_path=relative_file_path)
+        store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
+                          query_param='?expands-on=true',
+                          accession_url_mapper=json_data,
+                          chromepath=chrome_driver_path,
+                          directory=relative_file_path)
+
     tf = time.time()
     end_time = time.asctime()
     print('Time(hrs) taken for the crawl \t: %f' % ((tf - t0) / 3600))
