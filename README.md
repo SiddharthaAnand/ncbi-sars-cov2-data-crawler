@@ -48,13 +48,14 @@ In order to come up with this code quickly, I have used selenium. This could
 have been done in several other ways as well wherein the exact request
 could have been replicated in the python module and sent to the ncbi server.
 
-Another way, is to create an exact Request being sent to the server, including
-proper handling of cookies and other headers. Just a simple GET does not
-return the data in html which we need. This ncbi web page is high on
-javascript, which executes once it opens up in the web browser.
+Another way, is to create an [exact Request](https://github.com/SiddharthaAnand/ncbi-sars-cov2-data-crawler/issues/3)
+being sent to the server, including proper handling of cookies and other headers. Just a simple GET does not
+return the data in html which we need. This ncbi web page is high on javascript, which executes once it opens up in the web browser.
 
 ## Installation
 [Install chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/).
+
+
 Set up a virtual environment. If you do not have one, you can [install it](https://docs.python.org/3/library/venv.html).
 The following command uses a specific version of python (**python3.5**) create it.
 ```
