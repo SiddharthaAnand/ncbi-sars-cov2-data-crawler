@@ -54,8 +54,8 @@ return the data in html which we need. This ncbi web page is high on
 javascript, which executes once it opens up in the web browser.
 
 ## Installation
-- [Install chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/).
-- Set up a virtual environment. If you do not have one, you can [install it](https://docs.python.org/3/library/venv.html).
+[Install chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/).
+Set up a virtual environment. If you do not have one, you can [install it](https://docs.python.org/3/library/venv.html).
 The following command uses a specific version of python (**python3.5**) create it.
 ```
 $ virtualenv -p /usr/bin/python3.5 venv
