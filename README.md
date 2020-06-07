@@ -65,6 +65,14 @@ Activate your virtualenv which was named **venv**.
 ```
 $ source venv/bin/activate
 ```
+Clone the repository.
+```
+$ git clone https://github.com/SiddharthaAnand/ncbi-sars-cov2-data-crawler.git
+```
+Switch to the cloned directory.
+```
+$ cd ncbi-sars-cov2-data-crawler/
+```
 Install requirements.
 ```
 $ pip install -r requirements.txt
