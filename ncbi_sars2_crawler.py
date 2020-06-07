@@ -166,13 +166,11 @@ def init_args_parser_with_commands():
 
 
 if __name__ == '__main__':
-    """
-    https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20
-    respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete
-    """
-    url = "https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20\
-respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete"
     chrome_driver_path, relative_file_path = init_args_parser_with_commands()
+    base_url = "https://www.ncbi.nlm.nih.gov"
+    path_params = "/labs/virus/vssi/#/virus"
+    query_params = "?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete"
+    url = base_url + path_params + query_params
     start_time = time.asctime()
     t0 = time.time()
     genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url,
