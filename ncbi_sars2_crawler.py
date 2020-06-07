@@ -144,7 +144,7 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
         ######################################################################
         print('##' * 30)
         print('SIZE OF ATGC GENOME SEQUENCES WRITTEN\t\t: %d/%d' % (len(accession_url_mapper) - len(empty_read),
-                                                           len(accession_url_mapper)))
+                                                                    len(accession_url_mapper)))
         print('WEB PAGES THAT TIMED OUT WHILE REQUESTING ATGC DATA\t: %d' % len(empty_read))
 
 
