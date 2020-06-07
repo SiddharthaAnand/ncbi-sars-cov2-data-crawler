@@ -143,7 +143,7 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
         #                           Some stats                              ##
         ######################################################################
         print('##' * 30)
-        print('ATGC GENOME SEQUENCE WRITTEN\t\t: %d/%d' % (len(accession_url_mapper) - len(empty_read),
+        print('SIZE OF ATGC GENOME SEQUENCES WRITTEN\t\t: %d/%d' % (len(accession_url_mapper) - len(empty_read),
                                                            len(accession_url_mapper)))
         print('WEB PAGES THAT TIMED OUT WHILE REQUESTING ATGC DATA\t: %d' % len(empty_read))
 
@@ -201,8 +201,8 @@ if __name__ == '__main__':
 
     tf = time.time()
     end_time = time.asctime()
-    print('Time(hrs) taken for the crawl \t: %f' % ((tf - t0) / 3600))
-    print('Start time in human terms\t:%s' % start_time)
-    print('End time in human terms  \t:%s' % end_time)
-    print('#' * 60)
+    print('START TIME IN HUMAN TERMS     \t: %s' % start_time)
+    print('END TIME IN HUMAN TERMS       \t: %s' % end_time)
+    print('TIME(HRS) TAKEN FOR THE CRAWL \t: %f' % ((tf - t0) / 3600))
+    print('##' * 30)
 
