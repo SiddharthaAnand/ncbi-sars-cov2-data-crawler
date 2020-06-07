@@ -27,7 +27,7 @@ It has been divided in two broad steps.
 ![sars2 novel coronavirus table of ncbi](screenshots/homepage_table_screenshot.png)
 - **The nucleotide details after you click on the accession link.**
 ![sars2 novel coronavirus table of ncbi](screenshots/homepage_accessionclick_details.png)
-- **The specific details on a certain nucleotide window. The relative url is stored from this window.**
+- **The metadata on a certain nucleotide window. The relative url is stored from this window.**
 ![sars2 novel coronavirus table of ncbi](screenshots/nucleotide-details.png)
 
 ### Step 2
