@@ -1,5 +1,5 @@
 # NCBI SARS COV-2 Data Crawler
-A crawler which crawls the atcg sequence of the novel corona-virus2
+A crawler which crawls the ATGC genome sequence of the novel corona-virus2
 found all over the world. This data is being uploaded at the [ncbi
 website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete) and being updated everyday.
 
@@ -45,7 +45,7 @@ $ source venv/bin/activate
 ```
 Install requirements
 ```
-$ pip install -r requirements
+$ pip install -r requirements.txt
 ```
 Understand command-line arguments with the help option.
 ```
@@ -64,3 +64,4 @@ arguments.
 at the same time.
 - [ ] Incremental crawling by checking the newly updated dates and new data.
 - [x] Create a directory if not present, when reading file path from the command line.
+- [ ] Update readme with detailed explanation of the code.
