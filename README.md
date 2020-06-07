@@ -88,4 +88,4 @@ arguments.
 at the same time.
 - [ ] Incremental crawling by checking the newly updated dates and new data.
 - [x] Create a directory if not present, when reading file path from the command line.
-- [ ] Update readme with detailed explanation of the code.
+- [x] Update readme with detailed explanation of the code.
