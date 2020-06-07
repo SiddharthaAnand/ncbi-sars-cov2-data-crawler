@@ -113,9 +113,9 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
                 empty_read[accession] = accession_url_mapper[accession]
                 continue
             time.sleep(4)
-            atcg_page_html = BeautifulSoup(driver.page_source, features='html.parser')
-            seq_list = atcg_page_html.findAll('span', attrs={'id': re.compile(accession + '.\d+_\d+')})
-            print('Reading atcg sequence for accession %s' % accession)
+            atgc_page_html = BeautifulSoup(driver.page_source, features='html.parser')
+            seq_list = atgc_page_html.findAll('span', attrs={'id': re.compile(accession + '.\d+_\d+')})
+            print('Reading atgc sequence for nucleotide/accession:\t%s' % accession)
             temp_seq_store = ""
             for seq in seq_list:
                 if 'UTR' in seq.text:
