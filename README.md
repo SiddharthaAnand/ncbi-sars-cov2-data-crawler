@@ -22,7 +22,7 @@ extract what we exactly need.
 ## The internals
 It has been divided in two broad steps.
 ### Step 1
-- **The image shown above is the sars2 webpage of ncbi. You can see the nucleotide column, consists of Accession IDS.**
+- **The image shown is the sars2 webpage of ncbi. You can see the nucleotide column, consists of Accession IDS.**
 ![sars2 novel coronavirus webpage of ncbi](screenshots/homepage_screenshot.png)
 - **The screenshot of the table which contains the Accession IDS.**
 ![sars2 novel coronavirus table of ncbi](screenshots/homepage_table_screenshot.png)
