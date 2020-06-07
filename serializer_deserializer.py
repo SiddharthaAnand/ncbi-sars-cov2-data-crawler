@@ -47,12 +47,12 @@ def create_directory_if_not_present(rel_path):
     return os.path.exists(rel_path)
 
 
-def read_as_json(filename=None):
-    if filename is not None:
+def read_as_json(relative_file_path=None):
+    if relative_file_path is not None:
         print('#' * 20)
         print('Reading empty accessions file')
         try:
-            with open(filename, 'r') as reader:
+            with open(relative_file_path + '/empty_accessions_read', 'r') as reader:
                 return json.load(reader)
         except IOError as e:
             print('Exception while reading/loading file into json', e)
