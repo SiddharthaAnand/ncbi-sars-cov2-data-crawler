@@ -151,9 +151,9 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
 def init_args_parser_with_commands():
     import argparse
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
-    parser.add_argument('--chromepath', type=str, help='Path to chrome driver')
-    parser.add_argument('--filepath', type=str, help='Enter the relative file address to store the results.')
-    parser.add_argument('crawl_timedout_pages', type=bool, help='Crawl the left over pages which were timed out')
+    parser.add_argument('-c', '--chromepath', type=str, help='Path to chrome driver')
+    parser.add_argument('-f', '--filepath', type=str, help='Enter the relative file address to store the results.')
+    parser.add_argument('-ctp', '--crawl_timedout_pages', type=bool, help='Crawl the pages which were timed out')
     args = parser.parse_args()
     chrome_path = args.chromepath
     file_name = args.filepath
@@ -191,7 +191,7 @@ if __name__ == '__main__':
                           accession_url_mapper=json_data,
                           chromepath=chrome_driver_path,
                           directory=relative_file_path)
-    if crawl_timedout_pages is not None:
+    if crawl_timedout_pages is True:
         json_data = read_as_json(rel_file_path=relative_file_path)
         store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
                           query_param='?expands-on=true',
