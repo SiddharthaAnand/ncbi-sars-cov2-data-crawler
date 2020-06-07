@@ -149,12 +149,10 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
 def init_args_parser_with_commands():
     import argparse
     parser = argparse.ArgumentParser(description="Crawl atgc sequence of sars2 coronavirus from ncbi!")
-    # parser.add_argument('--url', type=str, help='Enter the ncbi url')
     parser.add_argument('--chromepath', type=str, help='Path to chrome driver')
     parser.add_argument('--filepath', type=str, help='Enter the relative file address to store the results.')
     args = parser.parse_args()
     chrome_path = args.chromepath
-    # absolute_ncbi_url = args.url
     file_name = args.filepath
 
     if file_name is None or chrome_path is None:
