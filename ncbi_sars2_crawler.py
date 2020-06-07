@@ -125,7 +125,7 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
 
             if len(temp_seq_store) == 0:
                 empty_read[accession] = accession_url_mapper[accession]
-            with open("data/" + directory + "/" + accession + '.txt', 'w') as writer:
+            with open(directory + "/" + accession + '.txt', 'w') as writer:
                 writer.write(temp_seq_store)
             accessions_read += 1
             if accessions_read % 10 == 0:
@@ -171,19 +171,16 @@ if __name__ == '__main__':
     url = base_url + path_params + query_params
     start_time = time.asctime()
     t0 = time.time()
-    genome_rel_url_mapper, nucleotide_details_dict = crawl_nucleotide_relative_url(url=url,
-                                                                                   chromepath=chrome_driver_path)
-    serialize_accession_to_rel_url_mapper(rel_file_path=relative_file_path,
-                                          genome_to_url_mapper_dict=genome_rel_url_mapper)
+    nucleotide_relative_url_dict, nucleotide_details_dict = crawl_nucleotide_relative_url(url=url,
+                                                                                          chromepath=chrome_driver_path)
+    serialize_to_json(rel_file_path=relative_file_path,
+                      genome_to_url_mapper_dict=nucleotide_relative_url_dict)
 
     serialize_metadata_of_nucleotide(rel_file_path=relative_file_path,
                                      nucleotide_details_dict=nucleotide_details_dict)
 
     json_data = read_urls_from_serialized_json_file(rel_file_path=relative_file_path)
-    ##################################################################
-    #       Read the empty accessions and store atcg strings again   #
-    ##################################################################
-    # json_data = read_as_json(filename='empty_accessions_read')
+
     store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
                       query_param='?expands-on=true',
                       accession_url_mapper=json_data,
