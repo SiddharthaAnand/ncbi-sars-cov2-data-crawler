@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from serializer_deserializer import *
 
 
-def store_gnome_urls(url=None, chromepath=None):
+def crawl_nucleotide_relative_url(url=None, chromepath=None):
     """
     This method is used to store the relative urls for visiting those pages
     which contain the atcg sequences.
@@ -171,8 +171,8 @@ if __name__ == '__main__':
     url = base_url + path_params + query_params
     start_time = time.asctime()
     t0 = time.time()
-    genome_rel_url_mapper, nucleotide_details_dict = store_gnome_urls(url=url,
-                                                                      chromepath=chrome_driver_path)
+    genome_rel_url_mapper, nucleotide_details_dict = crawl_nucleotide_relative_url(url=url,
+                                                                                   chromepath=chrome_driver_path)
     serialize_accession_to_rel_url_mapper(rel_file_path=relative_file_path,
                                           genome_to_url_mapper_dict=genome_rel_url_mapper)
 
@@ -191,7 +191,7 @@ if __name__ == '__main__':
                       directory=relative_file_path)
     tf = time.time()
     end_time = time.asctime()
-    print('Time taken for the crawl \t: %f' % ((tf - t0) / 3600))
+    print('Time(hrs) taken for the crawl \t: %f' % ((tf - t0) / 3600))
     print('Start time in human terms\t:%s' % start_time)
     print('End time in human terms  \t:%s' % end_time)
     print('#' * 60)
