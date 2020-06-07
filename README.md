@@ -20,7 +20,28 @@ BeautifulSoup is used to parse the html content from the page source, and
 extract what we exactly need.
 
 ## The internals
-It has been divided in to two broad steps.
+It has been divided in two broad steps.
+### Step 1
+![sars2 novel coronavirus webpage of ncbi](screenshots/homepage_screenshot.png)
+- The image shown above is the sars2 webpage of ncbi. You can see the nucleotide column, consists of Accession IDS.
+![sars2 novel coronavirus table of ncbi](screenshots/homepage_table_screenshot.png)
+- The screenshot of the table which contains the Accession IDS.
+![sars2 novel coronavirus table of ncbi](screenshots/homepage_accessionclick_details.png)
+- The nucleotide details after you click on the accession link.
+![sars2 novel coronavirus table of ncbi](screenshots/nucleotide_details.png)
+- The specific details on a certain nucleotide window. The relative url is stored from this window.
+
+### Step 2
+Read the relative url stored in the file called 'genome_to_url_mapper_dict' inside the directory given as arguments
+on the command line. It reads them one by one and goes to those web pages to scrape the data from there and stores
+in the files with <ACCESSION_NO>.txt format.
+![sars2 novel coronavirus table of ncbi](screenshots/atcg_url_page_screenshot.png)
+- The ATGC genome sequence web page on ncbi.
+![sars2 novel coronavirus table of ncbi](screenshots/atcg_sequence_url_only_screenshot.png)
+- Focus on the relative url that was stored. In the code, it adds to the base url to create a new url everytime.
+The relative url changes for every accession.
+![sars2 novel coronavirus table of ncbi](screenshots/atcg_sequence_screenshot.png)
+- The ATGC sequence which is stored in the .txt files.
 
 ## Why use selenium?
 
