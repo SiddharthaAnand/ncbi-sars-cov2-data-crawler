@@ -90,11 +90,11 @@ Run the code with logging on the console.
 $ python ncbi_sars2_crawler.py --chromepath <path/to/chromedriver> --filepath <directory/to/store/results>
 ```
 
-## Work in progress
+## If interested, you can contribute
 - [x] Add option arguments parser to handle the code with command-line
 arguments.
-- [ ] Figure out ways to use headless browser and use multiple requests
-at the same time.
-- [ ] Incremental crawling by checking the newly updated dates and new data.
+- [ ] [Figure out ways to use headless browser and use multiple requests
+at the same time.](https://github.com/SiddharthaAnand/ncbi-sars-cov2-data-crawler/issues/2)
+- [ ] [Incremental crawling by checking the newly updated dates and new data.](https://github.com/SiddharthaAnand/ncbi-sars-cov2-data-crawler/issues/1)
 - [x] Create a directory if not present, when reading file path from the command line.
 - [x] Update readme with detailed explanation of the code.
