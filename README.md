@@ -54,29 +54,33 @@ proper handling of cookies and other headers. Just a simple GET does not
 return the data in html which we need. This ncbi web page is high on
 javascript, which executes once it opens up in the web browser.
 
-
 ## Installation
-Set up a virtual environment.(virtualenv needs to be present in your system.)
+- [Install chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/).
+- Set up a virtual environment. If you do not have one, you can [install it](https://docs.python.org/3/library/venv.html).
+The following command uses a specific version of python (**python3.5**) create it.
 ```
 $ virtualenv -p /usr/bin/python3.5 venv
 ```
-Activate your virtualenv which was named 'venv'.
+Activate your virtualenv which was named **venv**.
 ```
 $ source venv/bin/activate
 ```
-Install requirements
+Install requirements.
 ```
 $ pip install -r requirements.txt
 ```
-Understand command-line arguments with the help option.
+Understand command-line arguments with the **help** option.
 ```
 $ python ncbi_sars2_crawler.py -h
 ```
-Run the code
+Run the code.
 ```
-$ python ncbi_sars2_crawler.py --chromepath /home/sid/github/chromedriver --filepath fourth_run >> <path_to_logs/logs_YYYYMMDD>
+$ python ncbi_sars2_crawler.py --chromepath <path/to/chromedriver> --filepath <directory/to/store/results> >> <directory/to/store/results/logs_YYYYMMDD>
 ```
-
+Run the code with logging on the console.
+```
+$ python ncbi_sars2_crawler.py --chromepath <path/to/chromedriver> --filepath <directory/to/store/results>
+```
 
 ## Work in progress
 - [x] Add option arguments parser to handle the code with command-line
