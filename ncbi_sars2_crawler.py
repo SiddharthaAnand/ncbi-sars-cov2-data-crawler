@@ -130,21 +130,22 @@ def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None
                 writer.write(temp_seq_store)
             accessions_read += 1
             if accessions_read % 10 == 0:
-                print('%d/%d accessions written to file' % (accessions_read,len(accession_url_mapper)))
+                print('ATGC SEQUENCES WRITTEN ON FILE\t: %d/%d' % (accessions_read, len(accession_url_mapper)))
 
         ######################################################################
-        #           Write empty accessions in a file                        ##
+        #           Write timed out pages  in a file                        ##
         ######################################################################
         if len(empty_read) != 0:
-            with open('empty_accessions_read', 'w') as writer:
+            with open(relative_file_path + '/pages_timed_out', 'w') as writer:
                 json.dump(empty_read, writer)
 
         ######################################################################
         #                           Some stats                              ##
         ######################################################################
-        print('#' * 60)
-        print('%d/%d accessions written' % (len(accession_url_mapper) - len(empty_read), len(accession_url_mapper)))
-        print('Empty accessions read \t: %d' % len(empty_read))
+        print('##' * 30)
+        print('ATGC GENOME SEQUENCE WRITTEN\t\t: %d/%d' % (len(accession_url_mapper) - len(empty_read),
+                                                           len(accession_url_mapper)))
+        print('WEB PAGES THAT TIMED OUT WHILE REQUESTING ATGC DATA\t: %d' % len(empty_read))
 
 
 def init_args_parser_with_commands():
