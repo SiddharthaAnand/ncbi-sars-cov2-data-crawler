@@ -19,6 +19,9 @@ We use selenium to simulate the user session on the browser.
 BeautifulSoup is used to parse the html content from the page source, and
 extract what we exactly need.
 
+## The internals
+It has been divided in to two broad steps.
+
 ## Why use selenium?
 
 In order to come up with this code quickly, I have used selenium. This could
@@ -50,7 +53,7 @@ $ python ncbi_sars2_crawler.py -h
 ```
 Run the code
 ```
-$ python ncbi_sars2_crawler.py --url 'https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete' --chromepath /home/sid/github/chromedriver --filepath fourth_run >> logs_20200602
+$ python ncbi_sars2_crawler.py --chromepath /home/sid/github/chromedriver --filepath fourth_run >> <path_to_logs/logs_YYYYMMDD>
 ```
 
 
