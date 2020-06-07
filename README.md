@@ -1,14 +1,13 @@
 # NCBI SARS COV-2 Data Crawler
-A crawler which crawls the ATGC genome sequence of the novel corona-virus2
+A crawler which crawls the **ATGC genome sequence** of the novel corona-virus2
 found all over the world. This data is being uploaded at the [ncbi
 website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete) and being updated everyday.
 
 ## What it scrapes exactly?
-It scrapes data from the [ncbi website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete) and currently only crawls the atcg
-sequence data being uploaded on the website. Other meta-data is not collected
-currently.
+It scrapes data from the [ncbi website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete) and crawls the **ATGC genome
+sequence** as well as other meta-data being uploaded on the website.
 
-The atcg sequence is stored in XXX.txt files in a directory given as
+The ATGC sequence is stored in XXXXX.txt files in a directory given as
 input by the user. So, if there are 2000 accessions, then there would be
 2000 .txt files.
 
