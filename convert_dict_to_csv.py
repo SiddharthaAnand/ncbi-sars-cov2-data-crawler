@@ -1,5 +1,6 @@
 import json
-import time
+from datetime import datetime
+
 
 def get_json_from_file(rel_file_path=None):
     with open(rel_file_path + "/nucleotide_details_dict", 'r') as fp:
@@ -7,8 +8,8 @@ def get_json_from_file(rel_file_path=None):
     return x
 
 
-def dict_to_csv(rel_file_path='20200531.csv', dict={}):
-    with open(rel_file_path + "/metadata_" + str(time.time()) + ".csv", 'w') as fp:
+def dict_to_csv(rel_file_path=None, dict={}):
+    with open(rel_file_path + "/metadata_" + datetime.today().strftime('%Y-%m-%d') + ".csv", 'w') as fp:
         fp.write('Accession,Collection Date,Geo Location\n')
         for i in dict:
             if 'Geo Location' not in dict[i]:
