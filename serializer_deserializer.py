@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 
 
 def read_urls_from_serialized_json_file(rel_file_path=None):
@@ -56,9 +57,6 @@ def read_as_json(relative_file_path=None):
         except IOError as e:
             print('Exception while reading/loading file into json', e)
     raise FileNotFoundError
-
-import json
-from datetime import datetime
 
 
 def get_json_from_file(rel_file_path=None):
