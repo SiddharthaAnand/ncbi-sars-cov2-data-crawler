@@ -101,7 +101,7 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
     return gnome_urls_store, nucleotide_details_dict
 
 
-def store_atcg_string(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
+def crawl_atgc_sequence(base_url=None, query_param=None, accession_url_mapper=None, chromepath=None, directory=None):
     if accession_url_mapper is not None:
         accessions_read = 0
         empty_read = {}
@@ -186,18 +186,18 @@ if __name__ == '__main__':
 
         json_data = read_urls_from_serialized_json_file(rel_file_path=relative_file_path)
 
-        store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
-                          query_param='?expands-on=true',
-                          accession_url_mapper=json_data,
-                          chromepath=chrome_driver_path,
-                          directory=relative_file_path)
+        crawl_atgc_sequence(base_url='https://www.ncbi.nlm.nih.gov',
+                            query_param='?expands-on=true',
+                            accession_url_mapper=json_data,
+                            chromepath=chrome_driver_path,
+                            directory=relative_file_path)
     if crawl_timedout_pages is True:
         json_data = read_as_json(rel_file_path=relative_file_path)
-        store_atcg_string(base_url='https://www.ncbi.nlm.nih.gov',
-                          query_param='?expands-on=true',
-                          accession_url_mapper=json_data,
-                          chromepath=chrome_driver_path,
-                          directory=relative_file_path)
+        crawl_atgc_sequence(base_url='https://www.ncbi.nlm.nih.gov',
+                            query_param='?expands-on=true',
+                            accession_url_mapper=json_data,
+                            chromepath=chrome_driver_path,
+                            directory=relative_file_path)
 
     tf = time.time()
     end_time = time.asctime()
