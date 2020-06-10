@@ -27,19 +27,17 @@ def serialize_metadata_of_nucleotide(rel_file_path=None, nucleotide_details_dict
     """
     if not os.path.exists(rel_file_path):
         created = create_directory_if_not_present(rel_file_path)
-    if created is True:
-        with open(rel_file_path + "/nucleotide_details_dict", "w") as fp:
-            json.dump(nucleotide_details_dict, fp)
-            print('NUCLEOTIDE DETAILS DUMPED IN FILE:\t%s' % 'nucleotide_details_dict')
+    with open(rel_file_path + "/nucleotide_details_dict", "w") as fp:
+        json.dump(nucleotide_details_dict, fp)
+        print('NUCLEOTIDE DETAILS DUMPED IN FILE:\t%s' % 'nucleotide_details_dict')
 
 
 def serialize_to_json(rel_file_path=None, genome_to_url_mapper_dict=None):
     if not os.path.exists(rel_file_path):
         created = create_directory_if_not_present(rel_file_path)
-    if created is True:
-        with open(rel_file_path + "/genome_to_url_mapper_dict", "w") as fp:
-            json.dump(genome_to_url_mapper_dict, fp)
-            print('URL MAPPER DUMPED IN FILE:\t%s' % genome_to_url_mapper_dict)
+    with open(rel_file_path + "/genome_to_url_mapper_dict", "w") as fp:
+        json.dump(genome_to_url_mapper_dict, fp)
+        print('URL MAPPER DUMPED IN FILE:\t%s' % genome_to_url_mapper_dict)
 
 
 def create_directory_if_not_present(rel_path):
@@ -66,18 +64,18 @@ def get_json_from_file(rel_file_path=None):
 
 
 def dict_to_csv(rel_file_path=None, metadata_of_nucleotide_dict={}):
+
     if not os.path.exists(rel_file_path):
         created = create_directory_if_not_present(rel_file_path)
 
-    if created in True:
-        file_name = rel_file_path + "/metadata_" + datetime.today().strftime('%Y-%m-%d') + ".csv"
-        with open(file_name, 'w') as fp:
-            fp.write('Accession,Collection Date,Geo Location\n')
-            for accession_id in metadata_of_nucleotide_dict:
-                if 'Geo Location' not in metadata_of_nucleotide_dict[accession_id]:
-                    temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + "NULL" + '\n'
-                else:
-                    temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + metadata_of_nucleotide_dict[accession_id]['Geo Location'] + '\n'
-                fp.write(temp)
-            print("Metadata written to file\t: %s" % file_name)
+    file_name = rel_file_path + "/metadata_" + datetime.today().strftime('%Y-%m-%d') + ".csv"
+    with open(file_name, 'w') as fp:
+        fp.write('Accession,Collection Date,Geo Location\n')
+        for accession_id in metadata_of_nucleotide_dict:
+            if 'Geo Location' not in metadata_of_nucleotide_dict[accession_id]:
+                temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + "NULL" + '\n'
+            else:
+                temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + metadata_of_nucleotide_dict[accession_id]['Geo Location'] + '\n'
+            fp.write(temp)
+        print("Metadata written to file\t: %s" % file_name)
 
