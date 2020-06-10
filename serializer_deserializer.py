@@ -68,11 +68,11 @@ def get_json_from_file(rel_file_path=None):
 def dict_to_csv(rel_file_path=None, metadata_of_nucleotide_dict={}):
     with open(rel_file_path + "/metadata_" + datetime.today().strftime('%Y-%m-%d') + ".csv", 'w') as fp:
         fp.write('Accession,Collection Date,Geo Location\n')
-        for i in metadata_of_nucleotide_dict:
-            if 'Geo Location' not in metadata_of_nucleotide_dict[i]:
-                temp = i + "," + metadata_of_nucleotide_dict[i]['Collection Date'] + "," + "NULL" + '\n'
+        for accession_id in metadata_of_nucleotide_dict:
+            if 'Geo Location' not in metadata_of_nucleotide_dict[accession_id]:
+                temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + "NULL" + '\n'
             else:
-                temp = i + "," + metadata_of_nucleotide_dict[i]['Collection Date'] + "," + metadata_of_nucleotide_dict[i]['Geo Location'] + '\n'
+                temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + metadata_of_nucleotide_dict[accession_id]['Geo Location'] + '\n'
             fp.write(temp)
         print(temp)
 
