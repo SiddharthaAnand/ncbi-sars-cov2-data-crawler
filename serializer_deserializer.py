@@ -66,13 +66,17 @@ def get_json_from_file(rel_file_path=None):
 
 
 def dict_to_csv(rel_file_path=None, metadata_of_nucleotide_dict={}):
-    with open(rel_file_path + "/metadata_" + datetime.today().strftime('%Y-%m-%d') + ".csv", 'w') as fp:
-        fp.write('Accession,Collection Date,Geo Location\n')
-        for accession_id in metadata_of_nucleotide_dict:
-            if 'Geo Location' not in metadata_of_nucleotide_dict[accession_id]:
-                temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + "NULL" + '\n'
-            else:
-                temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + metadata_of_nucleotide_dict[accession_id]['Geo Location'] + '\n'
-            fp.write(temp)
-        print(temp)
+    if not os.path.exists(rel_file_path):
+        created = create_directory_if_not_present(rel_file_path)
+
+    if created in True:
+        with open(rel_file_path + "/metadata_" + datetime.today().strftime('%Y-%m-%d') + ".csv", 'w') as fp:
+            fp.write('Accession,Collection Date,Geo Location\n')
+            for accession_id in metadata_of_nucleotide_dict:
+                if 'Geo Location' not in metadata_of_nucleotide_dict[accession_id]:
+                    temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + "NULL" + '\n'
+                else:
+                    temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + metadata_of_nucleotide_dict[accession_id]['Geo Location'] + '\n'
+                fp.write(temp)
+            print(temp)
 
