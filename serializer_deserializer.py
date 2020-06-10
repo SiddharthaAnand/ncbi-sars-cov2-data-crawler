@@ -79,5 +79,5 @@ def dict_to_csv(rel_file_path=None, metadata_of_nucleotide_dict={}):
                 else:
                     temp = accession_id + "," + metadata_of_nucleotide_dict[accession_id]['Collection Date'] + "," + metadata_of_nucleotide_dict[accession_id]['Geo Location'] + '\n'
                 fp.write(temp)
-            print("Metadata written to file %s" % file_name)
+            print("Metadata written to file\t: %s" % file_name)
 
