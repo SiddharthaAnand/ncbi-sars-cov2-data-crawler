@@ -1,7 +1,6 @@
 import re
 import sys
 import time
-import json
 import selenium
 from selenium import webdriver
 from bs4 import BeautifulSoup
