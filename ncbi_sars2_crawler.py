@@ -6,7 +6,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from serializer_deserializer import *
 
 
@@ -43,7 +43,7 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                 #           Choose the accession column                #
                 ########################################################
                 element = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, '[title="Expand record details"]'))
+                    ec.presence_of_element_located((By.CSS_SELECTOR, '[title="Expand record details"]'))
                 )
                 time.sleep(2)
                 accession_column_links = driver.find_elements_by_css_selector('[title="Expand record details"]')
@@ -82,7 +82,7 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                         print(nucleotide_details_dict)
                         print("temp: ", temp_dict)
                     element = WebDriverWait(driver, 5).until(
-                        EC.presence_of_element_located((By.XPATH, "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i"))
+                        ec.presence_of_element_located((By.XPATH, "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i"))
                     )
                     time.sleep(2)
                     close = driver.find_element_by_xpath("//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i")
