@@ -82,7 +82,8 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                         print(nucleotide_details_dict)
                         print("temp: ", temp_dict)
                     element = WebDriverWait(driver, 5).until(
-                        ec.presence_of_element_located((By.XPATH, "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i"))
+                        ec.presence_of_element_located((By.XPATH,
+                                                        "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i"))
                     )
                     time.sleep(2)
                     close = driver.find_element_by_xpath("//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i")
