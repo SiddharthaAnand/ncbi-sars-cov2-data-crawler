@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from serializer_deserializer import *
+from utility import *
 
 
 def crawl_nucleotide_relative_url(url=None, chromepath=None):
