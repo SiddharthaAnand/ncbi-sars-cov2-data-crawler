@@ -55,7 +55,6 @@ return the data in html which we need. This ncbi web page is high on javascript,
 ## Installation
 [Install chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/).
 
-
 Clone the repository.
 ```
 $ git clone https://github.com/SiddharthaAnand/ncbi-sars-cov2-data-crawler.git
