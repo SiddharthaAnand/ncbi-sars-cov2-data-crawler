@@ -1,6 +1,7 @@
 import re
 import sys
 import time
+import logging
 import selenium
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -8,6 +9,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from utility import *
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def crawl_nucleotide_relative_url(url=None, chromepath=None):
@@ -19,6 +22,7 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
     :param chromepath: Absolute path to the chromedriver which is stored in your system.
     :return: None
     """
+    logging.debug('Crawling nucleotide relative urls')
     if url is None or chromepath is None:
         return {'parameter': 'is None'}
     else:
@@ -38,7 +42,7 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                 ########################################################
                 #               Get the page first                     #
                 ########################################################
-                print("Scraping page \t: %d" % page)
+                logging.debug('Scraping page \t: %d', page)
                 ########################################################
                 #           Choose the accession column                #
                 ########################################################
@@ -51,7 +55,7 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                 if urls_stored >= 200:
                     time.sleep(5)
                     accession_column_links = driver.find_elements_by_css_selector('[title="Expand record details"]')
-                print(" total number f accessions\t: %d" % urls_stored)
+                logging.debug('Total number f accessions\t: %d', urls_stored)
 
                 for link in accession_column_links:
                     try:
@@ -88,7 +92,8 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                     time.sleep(2)
                     close = driver.find_element_by_xpath("//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i")
                     close.click()
-                print("%s urls stored\t" % (len(gnome_urls_store)))
+                logging.debug("%d urls stored", gnome_urls_store)
+
                 if len(accession_column_links) < 200:
                     break
                 ###############################################################################################
