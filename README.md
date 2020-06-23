@@ -14,8 +14,8 @@ input by the user. So, if there are 2000 accessions, then there would be
 ## How?
 Using selenium and beautifulsoup.
 
-We use selenium to simulate the user session on the browser.
-BeautifulSoup is used to parse the html content from the page source, and
+We use [selenium](https://pypi.org/project/selenium/) to simulate the user session on the browser.
+[BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) is used to parse the html content from the page source, and
 extract what we exactly need.
 
 ## The internals
