@@ -97,3 +97,4 @@ at the same time.](https://github.com/SiddharthaAnand/ncbi-sars-cov2-data-crawle
 - [ ] [Incremental crawling by checking the newly updated dates and new data.](https://github.com/SiddharthaAnand/ncbi-sars-cov2-data-crawler/issues/1)
 - [x] Create a directory if not present, when reading file path from the command line.
 - [x] Update readme with detailed explanation of the code.
+- [ ] Introduce unit tests for the module.
