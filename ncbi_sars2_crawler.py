@@ -198,6 +198,7 @@ if __name__ == '__main__':
                             accession_url_mapper=json_data,
                             chromepath=chrome_driver_path,
                             directory=relative_file_path)
+
     if crawl_timedout_pages is True:
         json_data = read_as_json(rel_file_path=relative_file_path)
         crawl_atgc_sequence(base_url='https://www.ncbi.nlm.nih.gov',
