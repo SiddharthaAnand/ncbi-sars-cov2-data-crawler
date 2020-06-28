@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from utility import *
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 
 def crawl_nucleotide_relative_url(url=None, chromepath=None):
@@ -78,7 +78,7 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                     temp_dict = {}
                     c += 1
                     for data in div_data:
-                        key, value = data.text.split(':')
+                        key, value = data.text.split(':', 1)
                         temp_dict[key] = value
 
                     nucleotide_details_dict.update({details_panel_for_accession.text: temp_dict})
@@ -87,10 +87,10 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
                         print("temp: ", temp_dict)
                     element = WebDriverWait(driver, 5).until(
                         ec.presence_of_element_located((By.XPATH,
-                                                        "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i"))
+                                                        "//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/uswds-ncbi-app-details-panel/div/div[2]/div[1]/i"))
                     )
                     time.sleep(2)
-                    close = driver.find_element_by_xpath("//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/div[1]/div[2]/div[1]/i")
+                    close = driver.find_element_by_xpath("//*[@id='cmscontent']/section/uswds-ncbi-app-root/uswds-ncbi-app-report/div/div[2]/uswds-ncbi-app-report-data/div/div[2]/uswds-ncbi-app-details-panel/div/div[2]/div[1]/i")
                     close.click()
                 logging.debug("%d urls stored", gnome_urls_store)
 
@@ -163,19 +163,19 @@ def init_args_parser_with_commands():
     args = parser.parse_args()
     chrome_path = args.chromepath
     file_name = args.filepath
-    crawl_timedout_pages = args.crawl_timed_out
-    log_level = args.loglevel
+    crawl_timedout_pages = args.crawl_timedout_pages
+    # log_level = args.loglevel
 
     if file_name is None or chrome_path is None:
         print('Incorrect or empty parameters given')
         print('Please type \n\t $ python ncbi_sars2_crawler.py -h\n for more details')
         sys.exit(-1)
 
-    return chrome_path, file_name, crawl_timedout_pages, log_level
+    return chrome_path, file_name, crawl_timedout_pages
 
 
 if __name__ == '__main__':
-    chrome_driver_path, relative_file_path, crawl_timedout_pages, log_level = init_args_parser_with_commands()
+    chrome_driver_path, relative_file_path, crawl_timedout_pages = init_args_parser_with_commands()
     base_url = "https://www.ncbi.nlm.nih.gov"
     path_params = "/labs/virus/vssi/#/virus"
     query_params = "?SeqType_s=Nucleotide&VirusLineage_ss=Severe%20acute%20respiratory%20syndrome%20coronavirus%202,%20taxid:2697049&Completeness_s=complete"
