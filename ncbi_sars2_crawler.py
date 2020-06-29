@@ -13,6 +13,11 @@ from utility import *
 # logging.basicConfig(level=logging.DEBUG)
 
 
+def get_total_pages_to_scrape(driver):
+    page = BeautifulSoup(driver.page_source)
+    return int(page.find('div', attrs={'class': 'ncbi-pagination-page'}).text.split()[2])
+
+
 def crawl_nucleotide_relative_url(url=None, chromepath=None):
     """
     This method is used to store the relative urls for visiting those pages
@@ -35,9 +40,11 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
         driver.get(url)
         url_count = 0
         c = 0
+        total_pages_to_crawl = get_total_pages_to_scrape(driver=driver)
+
         nucleotide_details_dict = {}
         try:
-            for page in range(29):
+            for page in range(total_pages_to_crawl):
                 ########################################################
                 #               Get the page first                     #
                 ########################################################
