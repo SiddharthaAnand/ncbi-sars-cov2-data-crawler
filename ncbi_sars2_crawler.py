@@ -35,10 +35,9 @@ def crawl_nucleotide_relative_url(url=None, chromepath=None):
         driver.get(url)
         url_count = 0
         c = 0
-        pages = range(16)
         nucleotide_details_dict = {}
         try:
-            for page in range(16):
+            for page in range(29):
                 ########################################################
                 #               Get the page first                     #
                 ########################################################
@@ -200,7 +199,7 @@ if __name__ == '__main__':
                             directory=relative_file_path)
 
     if crawl_timedout_pages is True:
-        json_data = read_as_json(rel_file_path=relative_file_path)
+        json_data = read_as_json(relative_file_path=relative_file_path)
         crawl_atgc_sequence(base_url='https://www.ncbi.nlm.nih.gov',
                             query_param='?expands-on=true',
                             accession_url_mapper=json_data,
